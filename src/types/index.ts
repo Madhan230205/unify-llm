@@ -3,8 +3,8 @@ export type Role = 'system' | 'user' | 'assistant' | 'tool';
 export interface Message {
     role: Role;
     content: string;
-    toolCalls?: { id?: string, name: string, arguments: any }[];
-    toolResults?: { toolCallId?: string, name: string, result: any }[];
+    toolCalls?: { id?: string, name: string, arguments: Record<string, unknown> | unknown }[];
+    toolResults?: { toolCallId?: string, name: string, result: unknown }[];
     /**
      * When `true`, instructs Anthropic to apply prompt caching to this message
      * (`cache_control: { type: 'ephemeral' }`).  
@@ -14,11 +14,11 @@ export interface Message {
     cachePrompt?: boolean;
 }
 
-export interface UnifyTool {
+export interface UnifyTool<TArgs = Record<string, unknown>, TResult = unknown> {
     name: string;
     description: string;
-    schema: Record<string, any>;
-    execute?: (args: any) => Promise<any> | any;
+    schema: Record<string, unknown>;
+    execute?: (args: TArgs) => Promise<TResult> | TResult;
 }
 
 export interface CompletionRequest {
@@ -29,21 +29,23 @@ export interface CompletionRequest {
     temperature?: number;
     maxTokens?: number;
     stream?: boolean;
-    schema?: Record<string, any>;
+    schema?: Record<string, unknown>;
     schemaName?: string;
-    providerOptions?: Record<string, any>;
+    providerOptions?: Record<string, unknown>;
     signal?: AbortSignal;
 }
 
 export class UnifyAPIError extends Error {
     public status?: number;
     public provider: string;
+    public rawError?: Record<string, unknown> | unknown;
 
-    constructor(message: string, provider: string, status?: number) {
+    constructor(message: string, provider: string, status?: number, rawError?: Record<string, unknown> | unknown) {
         super(message);
         this.name = 'UnifyAPIError';
         this.provider = provider;
         this.status = status;
+        this.rawError = rawError;
     }
 }
 
@@ -58,11 +60,11 @@ export interface TokenUsage {
 
 export interface CompletionResponse {
     content: string;
-    data?: any;
-    toolCalls?: { index?: number, id?: string, name?: string, arguments?: any }[];
+    data?: unknown;
+    toolCalls?: { index?: number, id?: string, name?: string, arguments?: Record<string, unknown> | unknown }[];
     model: string;
     usage?: TokenUsage;
-    providerSpecific?: Record<string, any>;
+    providerSpecific?: Record<string, unknown>;
 }
 
 export interface UnifyMiddleware {

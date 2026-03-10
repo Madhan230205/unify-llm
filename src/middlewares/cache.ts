@@ -1,6 +1,6 @@
 import { CompletionRequest, CompletionResponse, UnifyMiddleware } from '../types';
 
-export function safeJSONParse(str: string): any {
+export function safeJSONParse(str: string): unknown {
     // CWE-1321, CWE-502: Reject payloads containing dangerous prototype pollution keys BEFORE executing the JS engine's JSON parser
     if (/"__proto__"\s*:|"(?:constructor|prototype)"\s*:/.test(str)) {
         throw new Error("Unsafe payload detected");
@@ -36,6 +36,8 @@ export class InMemoryCache implements CacheStore {
 
 export class CacheMiddleware implements UnifyMiddleware {
     private store: CacheStore;
+    private inFlightRequests = new Map<string, Promise<CompletionResponse>>();
+    private inFlightResolvers = new Map<string, (res: CompletionResponse) => void>();
 
     constructor(store: CacheStore = new InMemoryCache()) {
         this.store = store;
@@ -59,12 +61,22 @@ export class CacheMiddleware implements UnifyMiddleware {
 
     async beforeRequest(request: CompletionRequest): Promise<CompletionRequest | CompletionResponse> {
         const key = await this.generateKey(request);
+
+        if (this.inFlightRequests.has(key)) {
+            // Cache Stampede Protection: Prevent identical concurrent requests
+            const response = await this.inFlightRequests.get(key)!;
+            return {
+                ...response,
+                providerSpecific: { ...response.providerSpecific, _cached: true }
+            };
+        }
+
         const cachedResponseStr = await this.store.get(key);
 
         if (cachedResponseStr) {
             try {
                 // Prevent prototype pollution BEFORE parsing (CWE-1321, CWE-502)
-                const parsed = safeJSONParse(cachedResponseStr);
+                const parsed = safeJSONParse(cachedResponseStr) as any;
 
                 // Runtime shape validation (CWE-502)
                 if (!parsed || typeof parsed !== 'object' || typeof parsed.content !== 'string' || typeof parsed.model !== 'string') {
@@ -76,11 +88,18 @@ export class CacheMiddleware implements UnifyMiddleware {
                     ...response,
                     providerSpecific: { ...response.providerSpecific, _cached: true }
                 };
-            } catch (e) {
+            } catch (e: unknown) {
                 // On corrupt cache parse error, treat as cache miss
-                return request;
             }
         }
+
+        // Register in-flight request to protect against cache stampedes
+        let resolver!: (res: CompletionResponse) => void;
+        const promise = new Promise<CompletionResponse>((resolve) => {
+            resolver = resolve;
+        });
+        this.inFlightRequests.set(key, promise);
+        this.inFlightResolvers.set(key, resolver);
 
         return request;
     }
@@ -92,6 +111,13 @@ export class CacheMiddleware implements UnifyMiddleware {
 
         const key = await this.generateKey(request);
         await this.store.set(key, JSON.stringify(response));
+
+        if (this.inFlightResolvers.has(key)) {
+            this.inFlightResolvers.get(key)!(response);
+            this.inFlightResolvers.delete(key);
+            this.inFlightRequests.delete(key);
+        }
+
         return response;
     }
 }

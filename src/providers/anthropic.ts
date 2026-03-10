@@ -112,7 +112,9 @@ export class AnthropicProvider extends BaseProvider {
 
         if (!response.ok) {
             const errorText = await response.text();
-            throw new UnifyAPIError(`Anthropic API error: ${response.status} - ${errorText}`, this.name, response.status);
+            let rawError;
+            try { rawError = JSON.parse(errorText); } catch (e) { rawError = errorText; }
+            throw new UnifyAPIError(`Anthropic API error: ${response.status} - ${errorText}`, this.name, response.status, rawError);
         }
 
         const data = await response.json();
@@ -169,7 +171,9 @@ export class AnthropicProvider extends BaseProvider {
 
         if (!response.ok) {
             const errorText = await response.text();
-            throw new UnifyAPIError(`Anthropic API error: ${response.status} - ${errorText}`, this.name, response.status);
+            let rawError;
+            try { rawError = JSON.parse(errorText); } catch (e) { rawError = errorText; }
+            throw new UnifyAPIError(`Anthropic API error: ${response.status} - ${errorText}`, this.name, response.status, rawError);
         }
 
         if (!response.body) {

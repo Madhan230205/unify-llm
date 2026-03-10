@@ -1,7 +1,8 @@
-export async function* streamNDJSON(stream: ReadableStream<Uint8Array>): AsyncGenerator<any, void, unknown> {
+export async function* streamNDJSON(stream: ReadableStream<Uint8Array>): AsyncGenerator<unknown, void, unknown> {
     const reader = stream.getReader();
     const decoder = new TextDecoder('utf-8');
     let buffer = '';
+    let pointer = 0;
 
     try {
         while (true) {
@@ -9,11 +10,11 @@ export async function* streamNDJSON(stream: ReadableStream<Uint8Array>): AsyncGe
             if (done) break;
 
             buffer += decoder.decode(value, { stream: true });
-            let newlineIndex = buffer.indexOf('\n');
+            let newlineIndex = buffer.indexOf('\n', pointer);
 
             while (newlineIndex !== -1) {
-                const line = buffer.slice(0, newlineIndex).trim();
-                buffer = buffer.slice(newlineIndex + 1);
+                const line = buffer.slice(pointer, newlineIndex).trim();
+                pointer = newlineIndex + 1;
 
                 if (line) {
                     try {
@@ -22,13 +23,19 @@ export async function* streamNDJSON(stream: ReadableStream<Uint8Array>): AsyncGe
                         // ignore 
                     }
                 }
-                newlineIndex = buffer.indexOf('\n');
+                newlineIndex = buffer.indexOf('\n', pointer);
+            }
+
+            if (pointer > 100000) {
+                buffer = buffer.slice(pointer);
+                pointer = 0;
             }
         }
 
-        if (buffer.trim()) {
+        const remainder = buffer.slice(pointer).trim();
+        if (remainder) {
             try {
-                yield JSON.parse(buffer.trim());
+                yield JSON.parse(remainder);
             } catch (e: unknown) { }
         }
     } finally {
@@ -45,6 +52,7 @@ export interface ParsedEvent {
 
 export function createParser(onParse: (event: ParsedEvent) => void) {
     let buffer = '';
+    let pointer = 0;
     let eventId: string | undefined;
     let eventName: string | undefined;
     let dataBuffer = '';
@@ -53,10 +61,10 @@ export function createParser(onParse: (event: ParsedEvent) => void) {
         buffer += chunk;
         let newlineIndex = -1;
 
-        while ((newlineIndex = buffer.search(/\r?\n/)) !== -1) {
-            const line = buffer.slice(0, newlineIndex);
-            const step = buffer[newlineIndex] === '\r' ? 2 : 1;
-            buffer = buffer.slice(newlineIndex + step);
+        while ((newlineIndex = buffer.indexOf('\n', pointer)) !== -1) {
+            const lineEnd = newlineIndex > pointer && buffer[newlineIndex - 1] === '\r' ? newlineIndex - 1 : newlineIndex;
+            const line = buffer.slice(pointer, lineEnd);
+            pointer = newlineIndex + 1;
 
             if (line === '') {
                 // Dispatch event when empty line is encountered
@@ -96,6 +104,12 @@ export function createParser(onParse: (event: ParsedEvent) => void) {
                     eventId = value;
                 }
             }
+        }
+
+        if (pointer > 100000) {
+            // Buffer compaction to avoid extreme GC overhead
+            buffer = buffer.slice(pointer);
+            pointer = 0;
         }
     }
 

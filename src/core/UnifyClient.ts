@@ -57,7 +57,7 @@ export class UnifyClient {
                     return { toolCallId: tc.id, name: tc.name, result: `Tool ${tc.name} not found or not executable.` };
                 }
                 try {
-                    const result = await tool.execute(tc.arguments);
+                    const result = await tool.execute(tc.arguments as Record<string, unknown>);
                     return { toolCallId: tc.id, name: tc.name, result };
                 } catch (e: unknown) {
                     const errorMsg = e instanceof Error ? e.message : String(e);
@@ -144,12 +144,13 @@ export class UnifyClient {
                 for (const tc of chunk.toolCalls) {
                     let existing = aggregatedToolCalls.find(t => t.index === tc.index || (tc.id && t.id === tc.id));
                     if (!existing) {
-                        existing = { index: tc.index, id: tc.id, name: tc.name, arguments: tc.arguments || '' };
-                        aggregatedToolCalls.push(existing);
+                        const newTc = { index: tc.index, id: tc.id, name: tc.name, arguments: typeof tc.arguments === 'string' ? tc.arguments : '' };
+                        aggregatedToolCalls.push(newTc);
+                        existing = newTc;
                     } else {
                         if (tc.id && !existing.id) existing.id = tc.id;
                         if (tc.name) existing.name = tc.name;
-                        if (tc.arguments) existing.arguments += tc.arguments;
+                        if (tc.arguments) existing.arguments = (existing.arguments || '') + (typeof tc.arguments === 'string' ? tc.arguments : '');
                     }
                 }
                 chunk.toolCalls = JSON.parse(JSON.stringify(aggregatedToolCalls));

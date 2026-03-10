@@ -79,7 +79,9 @@ export class OllamaProvider extends BaseProvider {
 
         if (!response.ok) {
             const errorText = await response.text();
-            throw new UnifyAPIError(`Ollama API error: ${response.status} - ${errorText}`, this.name, response.status);
+            let rawError;
+            try { rawError = JSON.parse(errorText); } catch (e) { rawError = errorText; }
+            throw new UnifyAPIError(`Ollama API error: ${response.status} - ${errorText}`, this.name, response.status, rawError);
         }
 
         const data = await response.json();
@@ -117,14 +119,17 @@ export class OllamaProvider extends BaseProvider {
 
         if (!response.ok) {
             const errorText = await response.text();
-            throw new UnifyAPIError(`Ollama API error: ${response.status} - ${errorText}`, this.name, response.status);
+            let rawError;
+            try { rawError = JSON.parse(errorText); } catch (e) { rawError = errorText; }
+            throw new UnifyAPIError(`Ollama API error: ${response.status} - ${errorText}`, this.name, response.status, rawError);
         }
 
         if (!response.body) {
             throw new UnifyAPIError("No response body returned from Ollama.", this.name);
         }
 
-        for await (const data of streamNDJSON(response.body)) {
+        for await (const chunk of streamNDJSON(response.body)) {
+            const data = chunk as any;
             const contentDelta = data.message?.content || '';
 
             let toolCalls;
@@ -146,7 +151,7 @@ export class OllamaProvider extends BaseProvider {
                     completionTokens: data.eval_count || 0,
                     totalTokens: (data.prompt_eval_count || 0) + (data.eval_count || 0)
                 } : undefined,
-                providerSpecific: data
+                providerSpecific: data as Record<string, unknown>
             };
 
             if (data.done) break;
