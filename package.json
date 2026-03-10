@@ -1,0 +1,65 @@
+{
+  "name": "@atom8ai/unify-llm",
+  "version": "1.0.0",
+  "description": "The ultimate TypeScript LLM API wrapper and orchestration SDK. Build autonomous AI agents with Universal Tool Calling, Prompt Caching, streaming, and precise cost tracking across OpenAI, Anthropic Claude, Google Gemini, and Ollama. A lightweight, type-safe alternative to LangChain and Vercel AI SDK.",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "homepage": "https://github.com/Madhan230205/unify-llm#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Madhan230205/unify-llm.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Madhan230205/unify-llm/issues"
+  },
+  "keywords": [
+    "llm",
+    "ai",
+    "openai",
+    "anthropic",
+    "claude",
+    "gemini",
+    "ollama",
+    "tool calling",
+    "function calling",
+    "ai agents",
+    "agentic workflows",
+    "llm orchestration",
+    "llm sdk",
+    "api wrapper",
+    "typescript api",
+    "prompt caching",
+    "cost tracking",
+    "generative ai",
+    "structured outputs",
+    "json schema",
+    "vercel ai sdk alternative",
+    "langchain alternative",
+    "unify-llm"
+  ],
+  "author": "Atom8 AI",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@vitest/coverage-v8": "^4.0.18",
+    "dotenv": "^16.4.5",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^4.0.18"
+  }
+}
