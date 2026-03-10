@@ -134,6 +134,31 @@ client.use(costTracker);
 console.log(`Total System LLM Cost: $${costTracker.getTotalCost().toFixed(4)} USD`);
 ```
 
+### 5. 🚦 Serverless & Distributed Rate Limiting
+The `RateLimiterMiddleware` is fully extensible for multi-threaded or cloud VPS architectures. While it defaults to an in-memory store, you can pass any implementation matching the `RateLimiterStore` interface (e.g., an `ioredis` driver):
+
+```typescript
+import { RateLimiterMiddleware, RateLimiterStore } from '@atom8ai/unify-llm';
+import Redis from 'ioredis';
+
+const redis = new Redis();
+
+class RedisRateLimiterStore implements RateLimiterStore {
+    async increment(key: string, windowMs: number): Promise<number> {
+        const current = await redis.incr(key);
+        if (current === 1) await redis.pexpire(key, windowMs);
+        return current;
+    }
+}
+
+// Example: 60 requests per minute, backed by Redis, keyed by User ID
+client.use(new RateLimiterMiddleware(
+    60, 
+    new RedisRateLimiterStore(),
+    (req) => req.providerOptions?.userId ?? 'global'
+));
+```
+
 ---
 
 ## 🔧 Supported LLM Providers & Matrix

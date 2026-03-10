@@ -175,8 +175,20 @@ export class GeminiProvider extends BaseProvider {
                 const contentDelta = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
                 const usageMetadata = data.usageMetadata;
 
+                let toolCalls;
+                const functionCallParts = data.candidates?.[0]?.content?.parts?.filter((p: any) => p.functionCall) || [];
+                if (functionCallParts.length > 0) {
+                    let i = 0;
+                    toolCalls = functionCallParts.map((p: any) => ({
+                        id: `call_${Date.now()}_${i++}`, // Gemini lacks native call IDs
+                        name: p.functionCall.name,
+                        arguments: typeof p.functionCall.args === 'string' ? p.functionCall.args : JSON.stringify(p.functionCall.args || {})
+                    }));
+                }
+
                 yield {
                     content: contentDelta,
+                    toolCalls,
                     model: request.model,
                     usage: usageMetadata ? {
                         promptTokens: usageMetadata.promptTokenCount,
@@ -186,7 +198,7 @@ export class GeminiProvider extends BaseProvider {
                     } : undefined,
                     providerSpecific: data
                 };
-            } catch (e) {
+            } catch (e: unknown) {
                 // Ignore parse errors on incomplete chunks
             }
         }

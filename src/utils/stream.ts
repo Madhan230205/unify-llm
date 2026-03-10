@@ -18,7 +18,7 @@ export async function* streamNDJSON(stream: ReadableStream<Uint8Array>): AsyncGe
                 if (line) {
                     try {
                         yield JSON.parse(line);
-                    } catch (e) {
+                    } catch (e: unknown) {
                         // ignore 
                     }
                 }
@@ -29,7 +29,7 @@ export async function* streamNDJSON(stream: ReadableStream<Uint8Array>): AsyncGe
         if (buffer.trim()) {
             try {
                 yield JSON.parse(buffer.trim());
-            } catch (e) { }
+            } catch (e: unknown) { }
         }
     } finally {
         reader.cancel().catch(() => { });
@@ -135,7 +135,7 @@ export async function* streamSSE(stream: ReadableStream<Uint8Array>): AsyncGener
                 const chunkStr = decoder.decode(value, { stream: true });
                 parser.feed(chunkStr);
             }
-        } catch (e) {
+        } catch (e: unknown) {
             streamError = e;
             if (resolveNext) resolveNext();
         } finally {

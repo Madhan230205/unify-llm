@@ -1,4 +1,4 @@
-import { CompletionRequest, CompletionResponse, UnifyMiddleware } from '../types';
+import { CompletionRequest, CompletionResponse, UnifyMiddleware, Message } from '../types';
 import { BaseProvider } from '../providers/base';
 
 export class UnifyClient {
@@ -39,7 +39,7 @@ export class UnifyClient {
         if (request.schema && response.content) {
             try {
                 response = { ...response, data: JSON.parse(response.content) };
-            } catch (e) {
+            } catch (e: unknown) {
                 // Ignore parse errors, user can check response.data
             }
         }
@@ -59,8 +59,9 @@ export class UnifyClient {
                 try {
                     const result = await tool.execute(tc.arguments);
                     return { toolCallId: tc.id, name: tc.name, result };
-                } catch (e: any) {
-                    return { toolCallId: tc.id, name: tc.name, result: `Error executing tool: ${e.message}` };
+                } catch (e: unknown) {
+                    const errorMsg = e instanceof Error ? e.message : String(e);
+                    return { toolCallId: tc.id, name: tc.name, result: `Error executing tool: ${errorMsg}` };
                 }
             }));
 
@@ -68,8 +69,8 @@ export class UnifyClient {
                 ...(currentRequest as CompletionRequest),
                 messages: [
                     ...(currentRequest as CompletionRequest).messages,
-                    { role: 'assistant', content: response.content || '', toolCalls: response.toolCalls },
-                    { role: 'tool', content: '', toolResults: executedResults }
+                    { role: 'assistant', content: response.content || '', toolCalls: response.toolCalls as NonNullable<Message['toolCalls']> },
+                    { role: 'tool', content: '', toolResults: executedResults as NonNullable<Message['toolResults']> }
                 ]
             };
 
@@ -117,6 +118,7 @@ export class UnifyClient {
         let finalModel = '';
         let finalUsage: any = undefined;
         let finalProviderSpecific: any = {};
+        let aggregatedToolCalls: { index?: number, id?: string, name?: string, arguments?: string }[] = [];
 
         for await (const chunk of generator) {
             aggregatedContent += chunk.content;
@@ -138,6 +140,20 @@ export class UnifyClient {
             if (chunk.providerSpecific) {
                 finalProviderSpecific = { ...finalProviderSpecific, ...chunk.providerSpecific };
             }
+            if (chunk.toolCalls) {
+                for (const tc of chunk.toolCalls) {
+                    let existing = aggregatedToolCalls.find(t => t.index === tc.index || (tc.id && t.id === tc.id));
+                    if (!existing) {
+                        existing = { index: tc.index, id: tc.id, name: tc.name, arguments: tc.arguments || '' };
+                        aggregatedToolCalls.push(existing);
+                    } else {
+                        if (tc.id && !existing.id) existing.id = tc.id;
+                        if (tc.name) existing.name = tc.name;
+                        if (tc.arguments) existing.arguments += tc.arguments;
+                    }
+                }
+                chunk.toolCalls = JSON.parse(JSON.stringify(aggregatedToolCalls));
+            }
             yield chunk;
         }
 
@@ -149,10 +165,20 @@ export class UnifyClient {
             providerSpecific: finalProviderSpecific
         };
 
+        if (aggregatedToolCalls.length > 0) {
+            finalResponse.toolCalls = aggregatedToolCalls.map(tc => {
+                try {
+                    return { ...tc, arguments: JSON.parse(tc.arguments || '{}') };
+                } catch {
+                    return tc;
+                }
+            });
+        }
+
         if (request.schema && aggregatedContent) {
             try {
                 finalResponse.data = JSON.parse(aggregatedContent);
-            } catch (e) { }
+            } catch (e: unknown) { }
         }
 
         for (const middleware of this.middlewares) {
@@ -165,6 +191,7 @@ export class UnifyClient {
         yield {
             content: '',
             data: finalResponse.data,
+            toolCalls: finalResponse.toolCalls,
             model: finalResponse.model,
             usage: finalResponse.usage,
             providerSpecific: finalResponse.providerSpecific

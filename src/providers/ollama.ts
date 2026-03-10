@@ -73,7 +73,8 @@ export class OllamaProvider extends BaseProvider {
         const response = await fetch(`${this.baseUrl}/api/chat`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(this.buildPayload(request, false))
+            body: JSON.stringify(this.buildPayload(request, false)),
+            signal: request.signal
         });
 
         if (!response.ok) {
@@ -110,7 +111,8 @@ export class OllamaProvider extends BaseProvider {
         const response = await fetch(`${this.baseUrl}/api/chat`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(this.buildPayload(request, true))
+            body: JSON.stringify(this.buildPayload(request, true)),
+            signal: request.signal
         });
 
         if (!response.ok) {
@@ -125,8 +127,19 @@ export class OllamaProvider extends BaseProvider {
         for await (const data of streamNDJSON(response.body)) {
             const contentDelta = data.message?.content || '';
 
+            let toolCalls;
+            if (data.message?.tool_calls) {
+                let i = 0;
+                toolCalls = data.message.tool_calls.map((tc: any) => ({
+                    id: `call_${Date.now()}_${i++}`,
+                    name: tc.function.name,
+                    arguments: typeof tc.function.arguments === 'string' ? tc.function.arguments : JSON.stringify(tc.function.arguments || {})
+                }));
+            }
+
             yield {
                 content: contentDelta,
+                toolCalls,
                 model: data.model || request.model,
                 usage: data.done ? {
                     promptTokens: data.prompt_eval_count || 0,

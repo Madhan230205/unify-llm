@@ -79,7 +79,8 @@ export class AetherionProvider extends BaseProvider {
     private rewriteRequestForResume(originalRequest: CompletionRequest, partialContent: string): CompletionRequest {
         const resumedMessages: Message[] = [
             ...originalRequest.messages,
-            { role: 'assistant', content: partialContent }
+            { role: 'assistant', content: partialContent },
+            { role: 'user', content: 'SYSTEM OVERRIDE: Connection severed mid-generation. Please continue EXACTLY from where you left off, outputting only the remaining text or JSON string tokens to seamlessly complete the final assistant message.' }
         ];
 
         return {

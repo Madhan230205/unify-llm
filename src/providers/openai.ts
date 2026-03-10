@@ -94,7 +94,8 @@ export class OpenAIProvider extends BaseProvider {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${this.apiKey}`
             },
-            body: JSON.stringify(this.buildPayload(request, false))
+            body: JSON.stringify(this.buildPayload(request, false)),
+            signal: request.signal
         });
 
         if (!response.ok) {
@@ -134,7 +135,8 @@ export class OpenAIProvider extends BaseProvider {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${this.apiKey}`
             },
-            body: JSON.stringify(this.buildPayload(request, true))
+            body: JSON.stringify(this.buildPayload(request, true)),
+            signal: request.signal
         });
 
         if (!response.ok) {
@@ -153,8 +155,19 @@ export class OpenAIProvider extends BaseProvider {
                 const data = JSON.parse(event.data);
                 const contentDelta = data.choices[0]?.delta?.content || '';
 
+                let toolCalls;
+                if (data.choices[0]?.delta?.tool_calls) {
+                    toolCalls = data.choices[0].delta.tool_calls.map((tc: any) => ({
+                        index: tc.index,
+                        id: tc.id,
+                        name: tc.function?.name,
+                        arguments: tc.function?.arguments
+                    }));
+                }
+
                 yield {
                     content: contentDelta,
+                    toolCalls,
                     model: data.model || request.model,
                     usage: data.usage ? {
                         promptTokens: data.usage.prompt_tokens,
@@ -164,7 +177,7 @@ export class OpenAIProvider extends BaseProvider {
                     } : undefined,
                     providerSpecific: data
                 };
-            } catch (e) {
+            } catch (e: unknown) {
                 // Ignore parse errors on incomplete chunks
             }
         }

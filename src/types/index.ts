@@ -32,6 +32,7 @@ export interface CompletionRequest {
     schema?: Record<string, any>;
     schemaName?: string;
     providerOptions?: Record<string, any>;
+    signal?: AbortSignal;
 }
 
 export class UnifyAPIError extends Error {
@@ -58,7 +59,7 @@ export interface TokenUsage {
 export interface CompletionResponse {
     content: string;
     data?: any;
-    toolCalls?: { id?: string, name: string, arguments: any }[];
+    toolCalls?: { index?: number, id?: string, name?: string, arguments?: any }[];
     model: string;
     usage?: TokenUsage;
     providerSpecific?: Record<string, any>;

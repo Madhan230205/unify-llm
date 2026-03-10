@@ -106,7 +106,8 @@ export class AnthropicProvider extends BaseProvider {
                 'anthropic-version': '2023-06-01',
                 'anthropic-beta': 'prompt-caching-2024-07-31'
             },
-            body: JSON.stringify(this.buildPayload(request, false))
+            body: JSON.stringify(this.buildPayload(request, false)),
+            signal: request.signal
         });
 
         if (!response.ok) {
@@ -162,7 +163,8 @@ export class AnthropicProvider extends BaseProvider {
                 'anthropic-version': '2023-06-01',
                 'anthropic-beta': 'prompt-caching-2024-07-31'
             },
-            body: JSON.stringify(this.buildPayload(request, true))
+            body: JSON.stringify(this.buildPayload(request, true)),
+            signal: request.signal
         });
 
         if (!response.ok) {
@@ -193,6 +195,13 @@ export class AnthropicProvider extends BaseProvider {
                         },
                         providerSpecific: data
                     };
+                } else if (event.event === 'content_block_start' && data.content_block?.type === 'tool_use') {
+                    yield {
+                        content: '',
+                        model: request.model,
+                        toolCalls: [{ index: data.index, id: data.content_block.id, name: data.content_block.name, arguments: '' }],
+                        providerSpecific: data
+                    };
                 } else if (event.event === 'content_block_delta') {
                     if (data.delta?.type === 'text_delta') {
                         yield {
@@ -202,15 +211,16 @@ export class AnthropicProvider extends BaseProvider {
                         };
                     } else if (data.delta?.type === 'input_json_delta') {
                         yield {
-                            content: data.delta.partial_json,
+                            content: request.schema ? data.delta.partial_json : '',
                             model: request.model,
+                            toolCalls: request.schema ? undefined : [{ index: data.index, arguments: data.delta.partial_json }],
                             providerSpecific: data
                         };
                     }
                 } else if (event.event === 'message_delta' && data.usage) {
                     yield { content: '', model: request.model, usage: { promptTokens: 0, completionTokens: data.usage.output_tokens || 0, totalTokens: data.usage.output_tokens || 0 }, providerSpecific: data };
                 }
-            } catch (e) {
+            } catch (e: unknown) {
                 // Ignore parse errors on incomplete chunks
             }
         }

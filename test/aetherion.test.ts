@@ -30,9 +30,11 @@ class ReliableProvider extends BaseProvider {
 
     async *streamCompletion(request: CompletionRequest): AsyncGenerator<CompletionResponse, void, unknown> {
         // Assert that the Reliable provider receives the rewritten prompt via assistant role
-        const lastMessage = request.messages[request.messages.length - 1];
-        if (lastMessage.role === 'assistant') {
-            yield { content: ` [resuming from: ${lastMessage.content}] reliable chunk`, model: 'reliable-model' };
+        const userOverrideMessage = request.messages[request.messages.length - 1];
+        const assistantPartialMessage = request.messages[request.messages.length - 2];
+
+        if (assistantPartialMessage?.role === 'assistant' && userOverrideMessage?.role === 'user') {
+            yield { content: ` [resuming from: ${assistantPartialMessage.content}] reliable chunk`, model: 'reliable-model' };
         } else {
             yield { content: 'reliable stream chunk', model: 'reliable-model' };
         }
