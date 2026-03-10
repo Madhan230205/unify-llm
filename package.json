@@ -1,6 +1,9 @@
 {
   "name": "@atom8ai/unify-llm",
   "version": "1.0.0",
+  "files": [
+    "dist"
+  ],
   "description": "The ultimate TypeScript LLM API wrapper and orchestration SDK. Build autonomous AI agents with Universal Tool Calling, Prompt Caching, streaming, and precise cost tracking across OpenAI, Anthropic Claude, Google Gemini, and Ollama. A lightweight, type-safe alternative to LangChain and Vercel AI SDK.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -23,6 +26,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Madhan230205/unify-llm.git"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   },
   "bugs": {
     "url": "https://github.com/Madhan230205/unify-llm/issues"
