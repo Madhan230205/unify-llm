@@ -18,9 +18,9 @@ export class OpenAIProvider extends BaseProvider {
         }
     }
 
-    private mapMessages(request: CompletionRequest) {
+    private mapMessages(request: CompletionRequest): Record<string, unknown>[] {
         return request.messages.map(msg => {
-            let content: any = msg.content || '';
+            let content: string | Record<string, unknown>[] = msg.content || '';
 
             if (msg.role === 'user' && msg.files && msg.files.length > 0) {
                 content = [];
@@ -37,7 +37,7 @@ export class OpenAIProvider extends BaseProvider {
                 }
             }
 
-            const mappedMsg: any = {
+            const mappedMsg: Record<string, unknown> = {
                 role: msg.role === 'tool' && msg.toolResults ? 'tool' : msg.role,
                 content: content,
             };
@@ -58,10 +58,10 @@ export class OpenAIProvider extends BaseProvider {
         });
     }
 
-    private buildPayload(request: CompletionRequest, stream: boolean) {
+    private buildPayload(request: CompletionRequest, stream: boolean): Record<string, unknown> {
         const mappedMessages = this.mapMessages(request);
 
-        const payload: any = {
+        const payload: Record<string, unknown> = {
             model: request.model,
             messages: mappedMessages,
             temperature: request.temperature,

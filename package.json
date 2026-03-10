@@ -4,7 +4,7 @@
   "files": [
     "dist"
   ],
-  "description": "The ultimate TypeScript LLM API wrapper and orchestration SDK. Build autonomous AI agents with Universal Tool Calling, Prompt Caching, streaming, and precise cost tracking across OpenAI, Anthropic Claude, Google Gemini, and Ollama. A lightweight, type-safe alternative to LangChain and Vercel AI SDK.",
+  "description": "The ultimate TypeScript LLM API wrapper and orchestration SDK. Build autonomous AI agents with Universal Tool Calling, Prompt Caching, streaming, and exact cost tracking across OpenAI, Anthropic Claude, Google Gemini, and Ollama. A lightweight, type-safe, zero-dependency alternative to LangChain and Vercel AI SDK.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -56,7 +56,10 @@
     "json schema",
     "vercel ai sdk alternative",
     "langchain alternative",
-    "unify-llm"
+    "unify-llm",
+    "multi-llm",
+    "ai gateway",
+    "llm middleware"
   ],
   "author": "Atom8 AI",
   "license": "MIT",

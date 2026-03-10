@@ -17,9 +17,9 @@ export class GeminiProvider extends BaseProvider {
         }
     }
 
-    private buildPayload(request: CompletionRequest) {
+    private buildPayload(request: CompletionRequest): Record<string, unknown> {
         const systemInstruction = request.messages.find(m => m.role === 'system')?.content;
-        const contents = [];
+        const contents: Record<string, unknown>[] = [];
         for (const msg of request.messages) {
             if (msg.role === 'system') continue;
 
@@ -36,7 +36,7 @@ export class GeminiProvider extends BaseProvider {
                 continue;
             }
 
-            const parts: any[] = [];
+            const parts: Record<string, unknown>[] = [];
             if (msg.content) {
                 parts.push({ text: msg.content });
             }
@@ -68,7 +68,7 @@ export class GeminiProvider extends BaseProvider {
             });
         }
 
-        const payload: any = {
+        const payload: Record<string, unknown> = {
             contents,
             systemInstruction: systemInstruction ? { parts: [{ text: systemInstruction }] } : undefined,
             generationConfig: {
@@ -79,8 +79,7 @@ export class GeminiProvider extends BaseProvider {
         };
 
         if (request.schema) {
-            payload.generationConfig.responseMimeType = "application/json";
-            payload.generationConfig.responseSchema = request.schema;
+            payload.generationConfig = { ...(payload.generationConfig as any), responseMimeType: "application/json", responseSchema: request.schema };
         }
 
         if (request.tools && request.tools.length > 0) {
@@ -109,7 +108,8 @@ export class GeminiProvider extends BaseProvider {
                 'Content-Type': 'application/json',
                 'x-goog-api-key': this.apiKey
             },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(payload),
+            signal: request.signal
         });
 
         if (!response.ok) {
@@ -165,7 +165,8 @@ export class GeminiProvider extends BaseProvider {
                 'Content-Type': 'application/json',
                 'x-goog-api-key': this.apiKey
             },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(payload),
+            signal: request.signal
         });
 
         if (!response.ok) {

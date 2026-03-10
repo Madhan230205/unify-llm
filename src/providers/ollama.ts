@@ -13,7 +13,7 @@ export class OllamaProvider extends BaseProvider {
     }
 
     private buildPayload(request: CompletionRequest, stream: boolean) {
-        const mappedMessages: any[] = [];
+        const mappedMessages: Record<string, unknown>[] = [];
         for (const msg of request.messages) {
             if (msg.role === 'tool' && msg.toolResults) {
                 for (const result of msg.toolResults) {
@@ -25,7 +25,7 @@ export class OllamaProvider extends BaseProvider {
                 continue;
             }
 
-            const mappedMsg: any = {
+            const mappedMsg: Record<string, unknown> = {
                 role: msg.role === 'tool' ? 'tool' : msg.role,
                 content: msg.content || ''
             };
@@ -43,7 +43,7 @@ export class OllamaProvider extends BaseProvider {
             mappedMessages.push(mappedMsg);
         }
 
-        const payload: any = {
+        const payload: Record<string, unknown> = {
             model: request.model,
             messages: mappedMessages,
             options: {
@@ -92,7 +92,7 @@ export class OllamaProvider extends BaseProvider {
         let toolCalls;
         if (data.message?.tool_calls) {
             let i = 0;
-            toolCalls = data.message.tool_calls.map((tc: any) => ({
+            toolCalls = data.message.tool_calls.map((tc: { function: { name: string, arguments: string | Record<string, unknown> } }) => ({
                 id: `call_${Date.now()}_${i++}`, // Ollama does not guarantee IDs
                 name: tc.function.name,
                 arguments: typeof tc.function.arguments === 'string' ? JSON.parse(tc.function.arguments) : tc.function.arguments || {}
@@ -132,13 +132,15 @@ export class OllamaProvider extends BaseProvider {
         }
 
         for await (const chunk of streamNDJSON(response.body)) {
-            const data = chunk as any;
-            const contentDelta = data.message?.content || '';
+            const data = chunk as Record<string, unknown>;
+            const message = data.message as Record<string, unknown> | undefined;
+            const contentDelta = (message?.content as string) || '';
 
             let toolCalls;
-            if (data.message?.tool_calls) {
+            const rawToolCalls = message?.tool_calls as Array<{ function: { name: string, arguments: string | Record<string, unknown> } }> | undefined;
+            if (rawToolCalls) {
                 let i = 0;
-                toolCalls = data.message.tool_calls.map((tc: any) => ({
+                toolCalls = rawToolCalls.map(tc => ({
                     id: `call_${Date.now()}_${i++}`,
                     name: tc.function.name,
                     arguments: typeof tc.function.arguments === 'string' ? tc.function.arguments : JSON.stringify(tc.function.arguments || {})
@@ -148,13 +150,13 @@ export class OllamaProvider extends BaseProvider {
             yield {
                 content: contentDelta,
                 toolCalls,
-                model: data.model || request.model,
+                model: (data.model as string) || request.model,
                 usage: data.done ? {
-                    promptTokens: data.prompt_eval_count || 0,
-                    completionTokens: data.eval_count || 0,
-                    totalTokens: (data.prompt_eval_count || 0) + (data.eval_count || 0)
+                    promptTokens: (data.prompt_eval_count as number) || 0,
+                    completionTokens: (data.eval_count as number) || 0,
+                    totalTokens: ((data.prompt_eval_count as number) || 0) + ((data.eval_count as number) || 0)
                 } : undefined,
-                providerSpecific: data as Record<string, unknown>
+                providerSpecific: data
             };
 
             if (data.done) break;

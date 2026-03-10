@@ -26,7 +26,8 @@ export async function* streamNDJSON(stream: ReadableStream<Uint8Array>): AsyncGe
                 newlineIndex = buffer.indexOf('\n', pointer);
             }
 
-            if (pointer > 100000) {
+            // Compact buffer efficiently only if memory footprint dominates to avoid O(N^2) slicing thrashing
+            if (pointer > 100000 && pointer > buffer.length / 2) {
                 buffer = buffer.slice(pointer);
                 pointer = 0;
             }
@@ -106,8 +107,8 @@ export function createParser(onParse: (event: ParsedEvent) => void) {
             }
         }
 
-        if (pointer > 100000) {
-            // Buffer compaction to avoid extreme GC overhead
+        if (pointer > 100000 && pointer > buffer.length / 2) {
+            // Buffer compaction to avoid extreme GC overhead natively scaling with ratio bounds
             buffer = buffer.slice(pointer);
             pointer = 0;
         }
