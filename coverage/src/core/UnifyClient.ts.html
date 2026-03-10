@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">76.34% </span>
+                <span class="strong">75.53% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>71/93</span>
+                <span class='fraction'>71/94</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">51.37% </span>
+                <span class="strong">49.55% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>56/109</span>
+                <span class='fraction'>56/113</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">79.31% </span>
+                <span class="strong">78.4% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>69/87</span>
+                <span class='fraction'>69/88</span>
             </div>
         
             
@@ -263,7 +263,8 @@
 <a name='L198'></a><a href='#L198'>198</a>
 <a name='L199'></a><a href='#L199'>199</a>
 <a name='L200'></a><a href='#L200'>200</a>
-<a name='L201'></a><a href='#L201'>201</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L201'></a><a href='#L201'>201</a>
+<a name='L202'></a><a href='#L202'>202</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -411,6 +412,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -522,7 +524,7 @@ export class UnifyClient {
 <span class="cstat-no" title="statement not covered" >                    return { toolCallId: tc.id, name: tc.name, result: `Tool ${tc.name} not found or not executable.` };</span>
                 }
                 try {
-                    const result = await tool.execute(tc.arguments);
+                    const result = await tool.execute(tc.arguments as Record&lt;string, unknown&gt;);
                     return { toolCallId: tc.id, name: tc.name, result };
                 } catch (e: unknown) {
                     const errorMsg = <span class="cstat-no" title="statement not covered" >e instanceof Error ? e.message : String(e);</span>
@@ -609,12 +611,13 @@ export class UnifyClient {
 <span class="cstat-no" title="statement not covered" >                for (const tc of chunk.toolCalls) {</span>
                     let existing = <span class="cstat-no" title="statement not covered" >aggregatedToolCalls.find(<span class="fstat-no" title="function not covered" >t =&gt; <span class="cstat-no" title="statement not covered" >t</span>.index === tc.index || (tc.id &amp;&amp; t.id === tc.id))</span>;</span>
 <span class="cstat-no" title="statement not covered" >                    if (!existing) {</span>
-<span class="cstat-no" title="statement not covered" >                        existing = { index: tc.index, id: tc.id, name: tc.name, arguments: tc.arguments || '' };</span>
-<span class="cstat-no" title="statement not covered" >                        aggregatedToolCalls.push(existing);</span>
+                        const newTc = <span class="cstat-no" title="statement not covered" >{ index: tc.index, id: tc.id, name: tc.name, arguments: typeof tc.arguments === 'string' ? tc.arguments : '' };</span>
+<span class="cstat-no" title="statement not covered" >                        aggregatedToolCalls.push(newTc);</span>
+<span class="cstat-no" title="statement not covered" >                        existing = newTc;</span>
                     } else {
 <span class="cstat-no" title="statement not covered" >                        if (tc.id &amp;&amp; !existing.id) <span class="cstat-no" title="statement not covered" >existing.id = tc.id;</span></span>
 <span class="cstat-no" title="statement not covered" >                        if (tc.name) <span class="cstat-no" title="statement not covered" >existing.name = tc.name;</span></span>
-<span class="cstat-no" title="statement not covered" >                        if (tc.arguments) <span class="cstat-no" title="statement not covered" >existing.arguments += tc.arguments;</span></span>
+<span class="cstat-no" title="statement not covered" >                        if (tc.arguments) <span class="cstat-no" title="statement not covered" >existing.arguments = (existing.arguments || '') + (typeof tc.arguments === 'string' ? tc.arguments : '');</span></span>
                     }
                 }
 <span class="cstat-no" title="statement not covered" >                chunk.toolCalls = JSON.parse(JSON.stringify(aggregatedToolCalls));</span>
@@ -670,7 +673,7 @@ export class UnifyClient {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-03-10T17:59:50.334Z
+                at 2026-03-10T18:20:15.116Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

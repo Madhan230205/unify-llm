@@ -20,19 +20,16 @@ export class GeminiProvider extends BaseProvider {
     private buildPayload(request: CompletionRequest) {
         const systemInstruction = request.messages.find(m => m.role === 'system')?.content;
         const contents = [];
-        for (const m of request.messages) {
-            if (m.role === 'system') continue;
+        for (const msg of request.messages) {
+            if (msg.role === 'system') continue;
 
-            if (m.role === 'tool' && m.toolResults) {
+            if (msg.role === 'tool' && msg.toolResults) {
                 contents.push({
                     role: 'user', // Gemini expects functionResponses to come from the 'user'
-                    parts: m.toolResults.map(tr => ({
+                    parts: msg.toolResults.map(tr => ({
                         functionResponse: {
                             name: tr.name,
-                            response: {
-                                name: tr.name,
-                                content: tr.result
-                            }
+                            response: { result: tr.result }
                         }
                     }))
                 });
@@ -40,10 +37,22 @@ export class GeminiProvider extends BaseProvider {
             }
 
             const parts: any[] = [];
-            if (m.content) parts.push({ text: m.content });
-
-            if (m.toolCalls) {
-                m.toolCalls.forEach(tc => {
+            if (msg.content) {
+                parts.push({ text: msg.content });
+            }
+            if (msg.files && msg.files.length > 0) {
+                for (const file of msg.files) {
+                    const cleanData = file.data.replace(/^data:[^;]+;base64,/, '');
+                    parts.push({
+                        inlineData: {
+                            mimeType: file.mimeType,
+                            data: cleanData
+                        }
+                    });
+                }
+            }
+            if (msg.toolCalls) {
+                msg.toolCalls.forEach(tc => {
                     parts.push({
                         functionCall: {
                             name: tc.name,
@@ -54,7 +63,7 @@ export class GeminiProvider extends BaseProvider {
             }
 
             contents.push({
-                role: m.role === 'assistant' ? 'model' : 'user',
+                role: msg.role === 'assistant' ? 'model' : 'user',
                 parts
             });
         }
@@ -147,7 +156,7 @@ export class GeminiProvider extends BaseProvider {
         };
     }
 
-    async *streamCompletion(request: CompletionRequest): AsyncGenerator<CompletionResponse, void, unknown> {
+    async * streamCompletion(request: CompletionRequest): AsyncGenerator<CompletionResponse, void, unknown> {
         const payload = this.buildPayload(request);
 
         const response = await fetch(`${this.baseUrl}/${request.model}:streamGenerateContent?alt=sse`, {

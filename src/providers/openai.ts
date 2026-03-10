@@ -18,36 +18,48 @@ export class OpenAIProvider extends BaseProvider {
         }
     }
 
-    private buildPayload(request: CompletionRequest, stream: boolean) {
-        const mappedMessages: any[] = [];
-        for (const msg of request.messages) {
-            if (msg.role === 'tool' && msg.toolResults) {
-                for (const result of msg.toolResults) {
-                    mappedMessages.push({
-                        role: 'tool',
-                        tool_call_id: result.toolCallId,
-                        content: typeof result.result === 'string' ? result.result : JSON.stringify(result.result)
+    private mapMessages(request: CompletionRequest) {
+        return request.messages.map(msg => {
+            let content: any = msg.content || '';
+
+            if (msg.role === 'user' && msg.files && msg.files.length > 0) {
+                content = [];
+                if (msg.content) {
+                    content.push({ type: 'text', text: msg.content });
+                }
+                for (const file of msg.files) {
+                    // OpenAI requires the data URI scheme
+                    const dataUri = `data:${file.mimeType};base64,${file.data}`;
+                    content.push({
+                        type: 'image_url',
+                        image_url: { url: dataUri }
                     });
                 }
-                continue;
             }
 
-            const mapped: any = {
-                role: msg.role,
-                content: msg.content || ""
+            const mappedMsg: any = {
+                role: msg.role === 'tool' && msg.toolResults ? 'tool' : msg.role,
+                content: content,
             };
-            if (msg.toolCalls) {
-                mapped.tool_calls = msg.toolCalls.map(tc => ({
+
+            if (msg.toolCalls && msg.toolCalls.length > 0) {
+                mappedMsg.tool_calls = msg.toolCalls.map(tc => ({
                     id: tc.id,
                     type: 'function',
-                    function: {
-                        name: tc.name,
-                        arguments: typeof tc.arguments === 'string' ? tc.arguments : JSON.stringify(tc.arguments)
-                    }
+                    function: { name: tc.name, arguments: tc.arguments }
                 }));
             }
-            mappedMessages.push(mapped);
-        }
+            if (msg.toolResults && msg.toolResults.length > 0) {
+                const tr = msg.toolResults[0];
+                mappedMsg.tool_call_id = tr.toolCallId;
+                mappedMsg.content = typeof tr.result === 'string' ? tr.result : JSON.stringify(tr.result);
+            }
+            return mappedMsg;
+        });
+    }
+
+    private buildPayload(request: CompletionRequest, stream: boolean) {
+        const mappedMessages = this.mapMessages(request);
 
         const payload: any = {
             model: request.model,

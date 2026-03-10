@@ -36,12 +36,35 @@ export class AnthropicProvider extends BaseProvider {
             }
 
             const contentBlocks: any[] = [];
-            if (msg.content) {
-                contentBlocks.push({
-                    type: 'text',
-                    text: msg.content,
-                    ...(msg.cachePrompt ? { cache_control: { type: 'ephemeral' } } : {})
-                });
+
+            if (msg.files && msg.files.length > 0) {
+                // If files are present, content MUST be an array of blocks
+                if (msg.content) {
+                    contentBlocks.push({ type: 'text', text: msg.content });
+                }
+                for (const file of msg.files) {
+                    const cleanData = file.data.replace(/^data:[^;]+;base64,/, '');
+                    contentBlocks.push({
+                        type: 'image',
+                        source: {
+                            type: 'base64',
+                            media_type: file.mimeType,
+                            data: cleanData
+                        }
+                    });
+                }
+            } else if (msg.content) {
+                // No files, content is a single text block
+                contentBlocks.push({ type: 'text', text: msg.content });
+            }
+
+            if (msg.cachePrompt) {
+                if (contentBlocks.length > 0) {
+                    // Anthropic allows placing cache_control on the last element of the content array
+                    contentBlocks[contentBlocks.length - 1].cache_control = { type: 'ephemeral' };
+                } else if (msg.content) { // Fallback if contentBlocks was empty but msg.content existed (shouldn't happen with current logic)
+                    contentBlocks.push({ type: 'text', text: msg.content, cache_control: { type: 'ephemeral' } });
+                }
             }
 
             if (msg.toolCalls) {

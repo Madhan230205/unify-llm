@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">79.01% </span>
+                <span class="strong">76.47% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>64/81</span>
+                <span class='fraction'>65/85</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">52.23% </span>
+                <span class="strong">52.11% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>35/67</span>
+                <span class='fraction'>37/71</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">79.1% </span>
+                <span class="strong">76.38% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>53/67</span>
+                <span class='fraction'>55/72</span>
             </div>
         
             
@@ -273,7 +273,16 @@
 <a name='L208'></a><a href='#L208'>208</a>
 <a name='L209'></a><a href='#L209'>209</a>
 <a name='L210'></a><a href='#L210'>210</a>
-<a name='L211'></a><a href='#L211'>211</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L211'></a><a href='#L211'>211</a>
+<a name='L212'></a><a href='#L212'>212</a>
+<a name='L213'></a><a href='#L213'>213</a>
+<a name='L214'></a><a href='#L214'>214</a>
+<a name='L215'></a><a href='#L215'>215</a>
+<a name='L216'></a><a href='#L216'>216</a>
+<a name='L217'></a><a href='#L217'>217</a>
+<a name='L218'></a><a href='#L218'>218</a>
+<a name='L219'></a><a href='#L219'>219</a>
+<a name='L220'></a><a href='#L220'>220</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -308,14 +317,23 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -505,19 +523,16 @@ export class GeminiProvider extends BaseProvider {
     private buildPayload(request: CompletionRequest) {
         const systemInstruction = request.messages.find(m =&gt; m.role === 'system')?.content;
         const contents = [];
-        for (const m of request.messages) {
-            <span class="missing-if-branch" title="if path not taken" >I</span>if (m.role === 'system') <span class="cstat-no" title="statement not covered" >continue;</span>
+        for (const msg of request.messages) {
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (msg.role === 'system') <span class="cstat-no" title="statement not covered" >continue;</span>
 &nbsp;
-            <span class="missing-if-branch" title="if path not taken" >I</span>if (m.role === 'tool' &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >m.toolResults) {</span>
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (msg.role === 'tool' &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >msg.toolResults) {</span>
 <span class="cstat-no" title="statement not covered" >                contents.push({</span>
                     role: 'user', // Gemini expects functionResponses to come from the 'user'
-                    parts: m.toolResults.map(<span class="fstat-no" title="function not covered" >tr =&gt; (<span class="cstat-no" title="statement not covered" >{</span></span>
+                    parts: msg.toolResults.map(<span class="fstat-no" title="function not covered" >tr =&gt; (<span class="cstat-no" title="statement not covered" >{</span></span>
                         functionResponse: {
                             name: tr.name,
-                            response: {
-                                name: tr.name,
-                                content: tr.result
-                            }
+                            response: { result: tr.result }
                         }
                     }))
                 });
@@ -525,10 +540,22 @@ export class GeminiProvider extends BaseProvider {
             }
 &nbsp;
             const parts: any[] = [];
-            <span class="missing-if-branch" title="else path not taken" >E</span>if (m.content) parts.push({ text: m.content });
-&nbsp;
-            <span class="missing-if-branch" title="if path not taken" >I</span>if (m.toolCalls) {
-<span class="cstat-no" title="statement not covered" >                m.toolCalls.forEach(<span class="fstat-no" title="function not covered" >tc =&gt; {</span></span>
+            <span class="missing-if-branch" title="else path not taken" >E</span>if (msg.content) {
+                parts.push({ text: msg.content });
+            }
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (msg.files &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >msg.files.length &gt; 0) {</span>
+<span class="cstat-no" title="statement not covered" >                for (const file of msg.files) {</span>
+                    const cleanData = <span class="cstat-no" title="statement not covered" >file.data.replace(/^data:[^;]+;base64,/, '');</span>
+<span class="cstat-no" title="statement not covered" >                    parts.push({</span>
+                        inlineData: {
+                            mimeType: file.mimeType,
+                            data: cleanData
+                        }
+                    });
+                }
+            }
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (msg.toolCalls) {
+<span class="cstat-no" title="statement not covered" >                msg.toolCalls.forEach(<span class="fstat-no" title="function not covered" >tc =&gt; {</span></span>
 <span class="cstat-no" title="statement not covered" >                    parts.push({</span>
                         functionCall: {
                             name: tc.name,
@@ -539,7 +566,7 @@ export class GeminiProvider extends BaseProvider {
             }
 &nbsp;
             contents.push({
-                role: m.role === 'assistant' ? <span class="branch-0 cbranch-no" title="branch not covered" >'model' : '</span>user',
+                role: msg.role === 'assistant' ? <span class="branch-0 cbranch-no" title="branch not covered" >'model' : '</span>user',
                 parts
             });
         }
@@ -632,7 +659,7 @@ export class GeminiProvider extends BaseProvider {
         };
     }
 &nbsp;
-    async *streamCompletion(request: CompletionRequest): AsyncGenerator&lt;CompletionResponse, void, unknown&gt; {
+    async * streamCompletion(request: CompletionRequest): AsyncGenerator&lt;CompletionResponse, void, unknown&gt; {
         const payload = this.buildPayload(request);
 &nbsp;
         const response = await fetch(`${this.baseUrl}/${request.model}:streamGenerateContent?alt=sse`, {
@@ -700,7 +727,7 @@ export class GeminiProvider extends BaseProvider {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-03-10T17:59:50.334Z
+                at 2026-03-10T18:20:15.116Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

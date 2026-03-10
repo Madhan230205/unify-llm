@@ -25,19 +25,22 @@ export class OllamaProvider extends BaseProvider {
                 continue;
             }
 
-            const mapped: any = {
-                role: msg.role,
-                content: msg.content || ""
+            const mappedMsg: any = {
+                role: msg.role === 'tool' ? 'tool' : msg.role,
+                content: msg.content || ''
             };
+            if (msg.files && msg.files.length > 0) {
+                mappedMsg.images = msg.files.map(f => f.data.replace(/^data:[^;]+;base64,/, ''));
+            }
             if (msg.toolCalls) {
-                mapped.tool_calls = msg.toolCalls.map(tc => ({
+                mappedMsg.tool_calls = msg.toolCalls.map(tc => ({
                     function: {
                         name: tc.name,
                         arguments: typeof tc.arguments === 'string' ? tc.arguments : JSON.stringify(tc.arguments)
                     }
                 }));
             }
-            mappedMessages.push(mapped);
+            mappedMessages.push(mappedMsg);
         }
 
         const payload: any = {

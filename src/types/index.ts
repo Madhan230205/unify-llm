@@ -12,6 +12,8 @@ export interface Message {
      * Requires the `anthropic-beta: prompt-caching-2024-07-31` header to be active.
      */
     cachePrompt?: boolean;
+    /** Provide base64 encoded images (or other files) here for multimodal Vision models. Do not include 'data:image/...;base64,' prefixes. */
+    files?: { mimeType: string, data: string }[];
 }
 
 export interface UnifyTool<TArgs = Record<string, unknown>, TResult = unknown> {
