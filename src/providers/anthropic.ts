@@ -17,11 +17,11 @@ export class AnthropicProvider extends BaseProvider {
         }
     }
 
-    private buildPayload(request: CompletionRequest, stream: boolean) {
+    private buildPayload(request: CompletionRequest, stream: boolean): Record<string, unknown> {
         const systemMsg = request.messages.find(m => m.role === 'system');
         const nonSystemMessages = request.messages.filter(m => m.role !== 'system');
 
-        const messages = [];
+        const messages: Record<string, unknown>[] = [];
         for (const msg of nonSystemMessages) {
             if (msg.role === 'tool' && msg.toolResults) {
                 messages.push({
@@ -35,7 +35,7 @@ export class AnthropicProvider extends BaseProvider {
                 continue;
             }
 
-            const contentBlocks: any[] = [];
+            const contentBlocks: Record<string, unknown>[] = [];
 
             if (msg.files && msg.files.length > 0) {
                 // If files are present, content MUST be an array of blocks
@@ -84,7 +84,7 @@ export class AnthropicProvider extends BaseProvider {
             });
         }
 
-        const payload: any = {
+        const payload: Record<string, unknown> = {
             model: request.model,
             messages: messages,
             max_tokens: request.maxTokens ?? 1024,
@@ -121,14 +121,19 @@ export class AnthropicProvider extends BaseProvider {
     }
 
     async generateCompletion(request: CompletionRequest): Promise<CompletionResponse> {
+        const usesCaching = request.messages.some(m => m.cachePrompt);
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+            'x-api-key': this.apiKey,
+            'anthropic-version': '2023-06-01'
+        };
+        if (usesCaching) {
+            headers['anthropic-beta'] = 'prompt-caching-2024-07-31';
+        }
+
         const response = await fetch(`${this.baseUrl}/messages`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': this.apiKey,
-                'anthropic-version': '2023-06-01',
-                'anthropic-beta': 'prompt-caching-2024-07-31'
-            },
+            headers,
             body: JSON.stringify(this.buildPayload(request, false)),
             signal: request.signal
         });
@@ -180,14 +185,19 @@ export class AnthropicProvider extends BaseProvider {
     }
 
     async *streamCompletion(request: CompletionRequest): AsyncGenerator<CompletionResponse, void, unknown> {
+        const usesCaching = request.messages.some(m => m.cachePrompt);
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+            'x-api-key': this.apiKey,
+            'anthropic-version': '2023-06-01'
+        };
+        if (usesCaching) {
+            headers['anthropic-beta'] = 'prompt-caching-2024-07-31';
+        }
+
         const response = await fetch(`${this.baseUrl}/messages`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': this.apiKey,
-                'anthropic-version': '2023-06-01',
-                'anthropic-beta': 'prompt-caching-2024-07-31'
-            },
+            headers,
             body: JSON.stringify(this.buildPayload(request, true)),
             signal: request.signal
         });

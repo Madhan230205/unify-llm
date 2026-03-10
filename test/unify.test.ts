@@ -3,7 +3,8 @@ import { UnifyClient, OpenAIProvider, InMemoryCache, CacheMiddleware, CostTracke
 
 // Mock Provider for testing
 class MockProvider extends OpenAIProvider {
-    readonly name = 'mock' as any;
+    // @ts-expect-error Mocking the provider name specifically for core router test validation boundaries
+    readonly name = 'mock';
     public callCount = 0;
 
     constructor() {
@@ -229,9 +230,10 @@ describe('UnifyClient & Middlewares', () => {
             schema: { type: 'object', properties: { user: { type: 'string' } } }
         });
 
-        expect(res.data).toBeDefined();
-        expect(res.data.user).toBe('Alice');
-        expect(res.data.age).toBe(30);
+        const data = res.data as Record<string, unknown>;
+        expect(data).toBeDefined();
+        expect(data.user).toBe('Alice');
+        expect(data.age).toBe(30);
     });
 
     it('should attach parsed JSON to final stream chunk data if schema is provided', async () => {
@@ -255,9 +257,10 @@ describe('UnifyClient & Middlewares', () => {
 
         const finalChunk = chunks[chunks.length - 1]; // Metadata chunk
         expect(finalChunk.content).toBe(''); // Stream summary yields empty content
-        expect(finalChunk.data).toBeDefined();
-        expect(finalChunk.data.user).toBe('Bob');
-        expect(finalChunk.data.age).toBe(40);
+        const data = finalChunk.data as Record<string, unknown>;
+        expect(data).toBeDefined();
+        expect(data.user).toBe('Bob');
+        expect(data.age).toBe(40);
     });
 
     it('should calculate cached token discounts correctly for OpenAI/Gemini (implicit)', async () => {
@@ -339,8 +342,9 @@ describe('UnifyClient & Middlewares', () => {
                     usage: { promptTokens: 10, completionTokens: 5, totalTokens: 15 }
                 };
             } else {
+                const toolResult = req.messages[req.messages.length - 1]?.toolResults?.[0]?.result as Record<string, unknown>;
                 return {
-                    content: `The weather in ${req.messages[req.messages.length - 1]?.toolResults?.[0]?.result?.city} is ${req.messages[req.messages.length - 1]?.toolResults?.[0]?.result?.temp} degrees.`,
+                    content: `The weather in ${toolResult?.city} is ${toolResult?.temp} degrees.`,
                     model: req.model,
                     usage: { promptTokens: 20, completionTokens: 10, totalTokens: 30 }
                 };
@@ -352,7 +356,7 @@ describe('UnifyClient & Middlewares', () => {
             name: 'getWeather',
             description: 'Gets weather',
             schema: { type: 'object' },
-            execute: async (args: any) => ({ temp: 32, city: args.city })
+            execute: async (args: Record<string, unknown>) => ({ temp: 32, city: args.city })
         };
 
         const res = await client.generate('mock', {
@@ -364,5 +368,82 @@ describe('UnifyClient & Middlewares', () => {
 
         expect(res.usage?.totalTokens).toBe(45);
         expect(res.content).toBe('The weather in Chennai is 32 degrees.');
+    });
+    it('should automatically execute tools recursively across multiple depth levels (depth-3 test)', async () => {
+        const client = new UnifyClient();
+        const mockProvider = new MockProvider();
+        let callIndex = 0;
+
+        mockProvider.generateCompletion = async (req) => {
+            if (callIndex === 0) {
+                // Return call 1 (depth 1)
+                callIndex++;
+                return {
+                    content: '',
+                    model: req.model,
+                    toolCalls: [{ id: 'call_1', name: 'searchHotel', arguments: { city: 'Paris' } }],
+                    usage: { promptTokens: 10, completionTokens: 5, totalTokens: 15 }
+                };
+            } else if (callIndex === 1) {
+                // Return call 2 (depth 2)
+                callIndex++;
+                return {
+                    content: '',
+                    model: req.model,
+                    toolCalls: [{ id: 'call_2', name: 'checkAvailability', arguments: { hotelId: 'paris_1' } }],
+                    usage: { promptTokens: 20, completionTokens: 5, totalTokens: 25 }
+                };
+            } else if (callIndex === 2) {
+                // Return call 3 (depth 3)
+                callIndex++;
+                return {
+                    content: '',
+                    model: req.model,
+                    toolCalls: [{ id: 'call_3', name: 'bookRoom', arguments: { hotelId: 'paris_1', room: '101' } }],
+                    usage: { promptTokens: 30, completionTokens: 5, totalTokens: 35 }
+                };
+            } else {
+                // Final answer (depth 4 terminal)
+                return {
+                    content: `Room 101 booked in Paris.`,
+                    model: req.model,
+                    usage: { promptTokens: 40, completionTokens: 10, totalTokens: 50 }
+                };
+            }
+        };
+
+        client.registerProvider(mockProvider);
+
+        const tools = [
+            {
+                name: 'searchHotel',
+                description: 'Search hotels',
+                schema: { type: 'object' },
+                execute: async (args: Record<string, unknown>) => ({ hotelId: 'paris_1' })
+            },
+            {
+                name: 'checkAvailability',
+                description: 'Check hotel rooms',
+                schema: { type: 'object' },
+                execute: async (args: Record<string, unknown>) => ({ available: ['101'] })
+            },
+            {
+                name: 'bookRoom',
+                description: 'Book a room',
+                schema: { type: 'object' },
+                execute: async (args: Record<string, unknown>) => ({ success: true })
+            }
+        ];
+
+        const res = await client.generate('mock', {
+            model: 'gpt-4o',
+            messages: [{ role: 'user', content: 'Book me a hotel in Paris.' }],
+            tools: tools,
+            autoExecute: true
+        });
+
+        // Sum of aggregations: 15 + 25 + 35 + 50 = 125 total tokens
+        expect(res.usage?.totalTokens).toBe(125);
+        expect(res.content).toBe('Room 101 booked in Paris.');
     });
 });

@@ -72,4 +72,6 @@ export interface CompletionResponse {
 export interface UnifyMiddleware {
     beforeRequest?: (request: CompletionRequest) => Promise<CompletionRequest | CompletionResponse>;
     afterResponse?: (request: CompletionRequest, response: CompletionResponse) => Promise<CompletionResponse>;
+    wrapGenerate?: (request: CompletionRequest, next: (req?: CompletionRequest) => Promise<CompletionResponse>) => Promise<CompletionResponse>;
+    wrapStream?: (request: CompletionRequest, next: (req?: CompletionRequest) => AsyncGenerator<CompletionResponse, void, unknown>) => AsyncGenerator<CompletionResponse, void, unknown>;
 }

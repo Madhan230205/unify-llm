@@ -80,7 +80,10 @@ export class AetherionProvider extends BaseProvider {
         const resumedMessages: Message[] = [
             ...originalRequest.messages,
             { role: 'assistant', content: partialContent },
-            { role: 'user', content: 'SYSTEM OVERRIDE: Connection severed mid-generation. Please continue EXACTLY from where you left off, outputting only the remaining text or JSON string tokens to seamlessly complete the final assistant message.' }
+            {
+                role: 'user',
+                content: '<system_directive>\nThe previous response was interrupted due to a network failure. Resume generation from the exact character where you stopped. Do not apologize, do not introduce your response, and do not repeat any previous text. Output only the immediate next sequential tokens.\n</system_directive>'
+            }
         ];
 
         return {

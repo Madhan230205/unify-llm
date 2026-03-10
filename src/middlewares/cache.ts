@@ -22,7 +22,12 @@ export class InMemoryCache implements CacheStore {
     }
 
     async get(key: string): Promise<string | null> {
-        return this.cache.get(key) || null;
+        const value = this.cache.get(key);
+        if (value === undefined) return null;
+        // Refresh insertion order for True LRU behaviour instead of raw FIFO
+        this.cache.delete(key);
+        this.cache.set(key, value);
+        return value;
     }
 
     async set(key: string, value: string): Promise<void> {

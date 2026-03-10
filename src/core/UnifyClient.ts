@@ -1,4 +1,4 @@
-import { CompletionRequest, CompletionResponse, UnifyMiddleware, Message } from '../types';
+import { CompletionRequest, CompletionResponse, UnifyMiddleware, Message, TokenUsage } from '../types';
 import { BaseProvider } from '../providers/base';
 
 export class UnifyClient {
@@ -34,15 +34,33 @@ export class UnifyClient {
             }
         }
 
-        let response = await provider.generateCompletion(currentRequest as CompletionRequest);
-
-        if (request.schema && response.content) {
-            try {
-                response = { ...response, data: JSON.parse(response.content) };
-            } catch (e: unknown) {
-                // Ignore parse errors, user can check response.data
+        const executeChain = async (req: CompletionRequest, index: number): Promise<CompletionResponse> => {
+            if (index >= this.middlewares.length) {
+                let res = await provider.generateCompletion(req);
+                if (req.schema && res.content) {
+                    try {
+                        res = { ...res, data: JSON.parse(res.content) };
+                    } catch (e: unknown) {
+                        res = {
+                            ...res,
+                            providerSpecific: {
+                                ...res.providerSpecific,
+                                _schemaParseError: e instanceof Error ? e.message : String(e)
+                            }
+                        };
+                    }
+                }
+                return res;
             }
-        }
+            const middleware = this.middlewares[index];
+            const next = (modifiedReq?: CompletionRequest) => executeChain(modifiedReq || req, index + 1);
+            if (middleware.wrapGenerate) {
+                return middleware.wrapGenerate(req, next);
+            }
+            return next(req);
+        };
+
+        let response = await executeChain(currentRequest as CompletionRequest, 0);
 
         for (const middleware of this.middlewares) {
             if (middleware.afterResponse) {
@@ -112,12 +130,26 @@ export class UnifyClient {
             }
         }
 
-        const generator = provider.streamCompletion(currentRequest as CompletionRequest);
+        const executeStreamChain = async function* (this: UnifyClient, req: CompletionRequest, index: number): AsyncGenerator<CompletionResponse, void, unknown> {
+            if (index >= this.middlewares.length) {
+                yield* provider.streamCompletion(req);
+                return;
+            }
+            const middleware = this.middlewares[index];
+            const next = (modifiedReq?: CompletionRequest) => executeStreamChain(modifiedReq || req, index + 1);
+            if (middleware.wrapStream) {
+                yield* middleware.wrapStream(req, next);
+            } else {
+                yield* next(req);
+            }
+        }.bind(this);
+
+        const generator = executeStreamChain(currentRequest as CompletionRequest, 0);
 
         let aggregatedContent = '';
         let finalModel = '';
-        let finalUsage: any = undefined;
-        let finalProviderSpecific: any = {};
+        let finalUsage: TokenUsage | undefined = undefined;
+        let finalProviderSpecific: Record<string, unknown> = {};
         let aggregatedToolCalls: { index?: number, id?: string, name?: string, arguments?: string }[] = [];
 
         for await (const chunk of generator) {
@@ -179,7 +211,12 @@ export class UnifyClient {
         if (request.schema && aggregatedContent) {
             try {
                 finalResponse.data = JSON.parse(aggregatedContent);
-            } catch (e: unknown) { }
+            } catch (e: unknown) {
+                finalResponse.providerSpecific = {
+                    ...finalResponse.providerSpecific,
+                    _schemaParseError: e instanceof Error ? e.message : String(e)
+                };
+            }
         }
 
         for (const middleware of this.middlewares) {

@@ -18,6 +18,13 @@ export const ModelCosts: Record<string, TokenCosts> = {
     'claude-3-5-sonnet-20240620': { prompt: 3.0, completion: 15.0, cachedPrompt: 0.30, cacheCreation: 3.75 },
     'gemini-1.5-pro': { prompt: 3.5, completion: 10.5, cachedPrompt: 0.875 },
     'gemini-1.5-flash': { prompt: 0.35, completion: 1.05, cachedPrompt: 0.0875 },
+    'gpt-4o-mini': { prompt: 0.15, completion: 0.60, cachedPrompt: 0.075 },
+    'gpt-4.5-turbo': { prompt: 75.0, completion: 150.0 }, // [WARNING] Estimates as of March 2025. Verify & inject dynamically for production scale.
+    'o1': { prompt: 15.0, completion: 60.0 },
+    'o3-mini': { prompt: 1.10, completion: 4.40 },
+    'claude-3-5-haiku-20241022': { prompt: 0.80, completion: 4.0, cachedPrompt: 0.08, cacheCreation: 1.0 },
+    'claude-3-7-sonnet-20250219': { prompt: 3.0, completion: 15.0, cachedPrompt: 0.30, cacheCreation: 3.75 },
+    'gemini-2.0-flash': { prompt: 0.10, completion: 0.40 },
 };
 
 export class CostTrackerMiddleware implements UnifyMiddleware {
