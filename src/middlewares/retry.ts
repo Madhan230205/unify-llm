@@ -1,4 +1,5 @@
 import { CompletionRequest, CompletionResponse, UnifyMiddleware, UnifyAPIError } from '../types';
+import { buildDeterministicRequestSeed, deterministicUnitInterval } from '../utils/deterministic';
 
 export interface RetryMiddlewareOptions {
     /** Maximum number of retry attempts per request. Defaults to 3. */
@@ -25,6 +26,20 @@ export class RetryMiddleware implements UnifyMiddleware {
             // 502: Bad Gateway
             return [429, 529, 500, 502, 503].includes(error.status || 0);
         }
+
+        // In mixed TS/JS test environments the same custom error class can be loaded
+        // through multiple module identities, making instanceof unreliable.
+        if (typeof error === 'object' && error !== null) {
+            const candidate = error as { name?: unknown; status?: unknown; provider?: unknown };
+            const status = typeof candidate.status === 'number' ? candidate.status : 0;
+            const looksLikeUnifyApiError =
+                candidate.name === 'UnifyAPIError' || typeof candidate.provider === 'string';
+
+            if (looksLikeUnifyApiError) {
+                return [429, 529, 500, 502, 503].includes(status);
+            }
+        }
+
         // General network errors (like fetch failures) can potentially be retried
         if (error instanceof TypeError && /\bfetch\b/i.test(error.message)) {
             return true;
@@ -41,7 +56,8 @@ export class RetryMiddleware implements UnifyMiddleware {
         const nextState = 3.99 * currentState * (1 - currentState);
 
         // Jitter scaling: push retries dynamically using the deterministic chaos output
-        const jitteredDelay = maxDelay * nextState;
+        // Enforce a minimum backoff floor so the chaos only affects the upper bounds of the jitter
+        const jitteredDelay = (this.baseDelayMs / 2) + (maxDelay * nextState);
         return { delay: Math.floor(jitteredDelay), nextState };
     }
 
@@ -49,10 +65,16 @@ export class RetryMiddleware implements UnifyMiddleware {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
+    private getInitialAhdState(request: CompletionRequest): number {
+        const seed = buildDeterministicRequestSeed(request);
+        const unit = deterministicUnitInterval(`retry:${seed}`);
+        if (unit <= 0 || unit >= 1) return 0.5;
+        return unit;
+    }
+
     async wrapGenerate(request: CompletionRequest, next: (req?: CompletionRequest) => Promise<CompletionResponse>): Promise<CompletionResponse> {
         let attempt = 0;
-        let localAhdState = Math.random() || 0.5;
-        if (localAhdState === 1) localAhdState = 0.5;
+        let localAhdState = this.getInitialAhdState(request);
 
         while (true) {
             try {
@@ -71,8 +93,7 @@ export class RetryMiddleware implements UnifyMiddleware {
 
     async *wrapStream(request: CompletionRequest, next: (req?: CompletionRequest) => AsyncGenerator<CompletionResponse, void, unknown>): AsyncGenerator<CompletionResponse, void, unknown> {
         let attempt = 0;
-        let localAhdState = Math.random() || 0.5;
-        if (localAhdState === 1) localAhdState = 0.5;
+        let localAhdState = this.getInitialAhdState(request);
 
         while (true) {
             let yieldedAnything = false;

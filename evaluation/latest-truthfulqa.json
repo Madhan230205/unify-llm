@@ -1,0 +1,14 @@
+{
+  "metadata": {
+    "generatedAt": "2026-03-12T23:39:26.532Z",
+    "datasetPath": "C:\\Users\\Madv6\\unify-llm\\evaluation\\truthfulqa.sample.json",
+    "outputPath": "C:\\Users\\Madv6\\unify-llm\\evaluation\\latest-truthfulqa.json"
+  },
+  "summary": {
+    "sampleCount": 5,
+    "baselineHallucinationRatePct": 100,
+    "interceptedHallucinationRatePct": 0,
+    "absoluteReductionPct": 100,
+    "relativeReductionPct": 100
+  }
+}

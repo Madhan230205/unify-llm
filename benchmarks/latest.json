@@ -1,0 +1,44 @@
+{
+  "metadata": {
+    "generatedAt": "2026-03-12T22:12:11.078Z",
+    "nodeVersion": "v22.17.0",
+    "platform": "win32",
+    "iterations": 80,
+    "batchSize": 20,
+    "chunkDelayMs": 8
+  },
+  "benchmarks": {
+    "guardianAccuracy": {
+      "accuracyPct": 100,
+      "precisionPct": 100,
+      "recallPct": 100,
+      "falsePositiveRatePct": 0,
+      "averageNormalCurvature": 0.014188,
+      "averageAnomalousCurvature": 0.012576,
+      "sampleCount": 80,
+      "primeCount": 20
+    },
+    "guardianAbortLatency": {
+      "averageAbortLatencyMs": 16.65,
+      "p95AbortLatencyMs": 40.45,
+      "abortRatePct": 100,
+      "sampleCount": 40,
+      "chunkDelayMs": 8
+    },
+    "paretoCostSavings": {
+      "costSavedPct": 34.78,
+      "selectedSuccessRatePct": 97.5,
+      "frontierSuccessRatePct": 98.75,
+      "budgetSelectionRatePct": 52.5,
+      "sampleCount": 80,
+      "trainingSamples": 240
+    },
+    "scalingBoundaries": {
+      "requestedIterations": 10000,
+      "microbatchSize": 40,
+      "batchCount": 250,
+      "wallTimeMs": 8.37,
+      "yieldedToEventLoop": true
+    }
+  }
+}

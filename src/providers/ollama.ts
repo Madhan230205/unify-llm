@@ -1,6 +1,7 @@
 import { BaseProvider } from './base';
 import { CompletionRequest, CompletionResponse, UnifyAPIError } from '../types';
 import { streamNDJSON } from '../utils/stream';
+import crypto from 'crypto';
 
 export class OllamaProvider extends BaseProvider {
     readonly name = 'ollama';
@@ -93,7 +94,7 @@ export class OllamaProvider extends BaseProvider {
         if (data.message?.tool_calls) {
             let i = 0;
             toolCalls = data.message.tool_calls.map((tc: { function: { name: string, arguments: string | Record<string, unknown> } }) => ({
-                id: `call_${Date.now()}_${i++}`, // Ollama does not guarantee IDs
+                id: `call_${crypto.randomUUID().replace(/-/g, '')}`, // Ollama does not guarantee IDs, inject standard UUID format
                 name: tc.function.name,
                 arguments: typeof tc.function.arguments === 'string' ? JSON.parse(tc.function.arguments) : tc.function.arguments || {}
             }));
@@ -139,9 +140,8 @@ export class OllamaProvider extends BaseProvider {
             let toolCalls;
             const rawToolCalls = message?.tool_calls as Array<{ function: { name: string, arguments: string | Record<string, unknown> } }> | undefined;
             if (rawToolCalls) {
-                let i = 0;
                 toolCalls = rawToolCalls.map(tc => ({
-                    id: `call_${Date.now()}_${i++}`,
+                    id: `call_${crypto.randomUUID().replace(/-/g, '')}`,
                     name: tc.function.name,
                     arguments: typeof tc.function.arguments === 'string' ? tc.function.arguments : JSON.stringify(tc.function.arguments || {})
                 }));

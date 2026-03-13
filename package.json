@@ -4,7 +4,7 @@
   "files": [
     "dist"
   ],
-  "description": "The ultimate TypeScript LLM API wrapper and orchestration SDK. Build autonomous AI agents with Universal Tool Calling, Prompt Caching, streaming, and exact cost tracking across OpenAI, Anthropic Claude, Google Gemini, and Ollama. A lightweight, type-safe, zero-dependency alternative to LangChain and Vercel AI SDK.",
+  "description": "A TypeScript SDK for multi-provider LLM orchestration with tool calling, prompt caching, streaming, routing, and cost tracking across OpenAI, Anthropic, Gemini, and Ollama.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -18,7 +18,15 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
+    "benchmark": "tsx benchmarks/run.ts",
+    "benchmark:truthfulqa": "tsx benchmarks/truthfulqa.ts",
+    "benchmark:gemini": "tsx benchmarks/gemini-truthfulness.ts",
+    "benchmark:validation": "tsx benchmarks/validation.ts",
+    "benchmark:comprehensive": "tsx benchmarks/comprehensive-validation.ts",
+    "benchmark:quick": "tsx benchmarks/run.ts --iterations 80 --batch-size 20",
+    "benchmark:ci": "tsx benchmarks/run.ts --iterations 80 --batch-size 20 --out benchmarks/latest.json && tsx benchmarks/assert.ts benchmarks/latest.json",
     "test": "vitest run",
+    "test:gemini:realtime": "node ./scripts/run-gemini-realtime-test.mjs",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"
   },
@@ -63,11 +71,15 @@
   ],
   "author": "Atom8 AI",
   "license": "MIT",
+  "dependencies": {
+    "@google/generative-ai": "^0.12.0"
+  },
   "devDependencies": {
     "@types/node": "^20.0.0",
     "@vitest/coverage-v8": "^4.0.18",
     "dotenv": "^16.4.5",
     "tsup": "^8.0.0",
+    "tsx": "^4.21.0",
     "typescript": "^5.0.0",
     "vitest": "^4.0.18"
   }

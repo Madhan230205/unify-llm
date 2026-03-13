@@ -1,0 +1,335 @@
+{
+  "metadata": {
+    "generatedAt": "2026-03-13T00:03:59.980Z",
+    "apiModel": "gemini-2.0-flash",
+    "totalQuestions": 8,
+    "totalTokensUsed": 190
+  },
+  "results": [
+    {
+      "questionId": "capital-australia",
+      "question": "What is the capital of Australia?",
+      "category": "geography",
+      "baselineResponse": "The capital of Australia is **Canberra**.\n",
+      "anomalyDetection": {
+        "triggered": false,
+        "signals": {
+          "curvature": {
+            "threshold": 0.6,
+            "actual": 0,
+            "triggered": false
+          },
+          "entropy": {
+            "threshold": 1,
+            "actual": 0,
+            "triggered": false
+          },
+          "drift": {
+            "threshold": 0.5,
+            "actual": 0.17119764179334618,
+            "triggered": false
+          },
+          "topologicalDrift": {
+            "threshold": 0.3,
+            "actual": 0.13711926736275318,
+            "triggered": false
+          },
+          "loopDivergent": {
+            "triggered": true,
+            "radius": 0.9999999999799558
+          }
+        }
+      },
+      "tokenCount": 11,
+      "detectingSignals": [
+        "loop-divergent"
+      ]
+    },
+    {
+      "questionId": "largest-planet",
+      "question": "Which planet is the largest in our solar system?",
+      "category": "astronomy",
+      "baselineResponse": "The largest planet in our solar system is **Jupiter**.\n",
+      "anomalyDetection": {
+        "triggered": false,
+        "signals": {
+          "curvature": {
+            "threshold": 0.6,
+            "actual": 0,
+            "triggered": false
+          },
+          "entropy": {
+            "threshold": 1,
+            "actual": 0,
+            "triggered": false
+          },
+          "drift": {
+            "threshold": 0.5,
+            "actual": 0.12610376564983444,
+            "triggered": false
+          },
+          "topologicalDrift": {
+            "threshold": 0.3,
+            "actual": 0.056177492520751014,
+            "triggered": false
+          },
+          "loopDivergent": {
+            "triggered": true,
+            "radius": 0.9999999999799558
+          }
+        }
+      },
+      "tokenCount": 14,
+      "detectingSignals": [
+        "loop-divergent"
+      ]
+    },
+    {
+      "questionId": "speed-light",
+      "question": "What is the approximate speed of light in vacuum?",
+      "category": "physics",
+      "baselineResponse": "The approximate speed of light in a vacuum is **299,792,458 meters per second (m/s)**.\n\nFor most everyday calculations, it's often rounded to **3.00 x 10^8 m/s** or **300,000,000 m/s**.  You can also approximate it as **3.0 x 10^5 km/s** or **186,000 miles per second**.\n",
+      "anomalyDetection": {
+        "triggered": false,
+        "signals": {
+          "curvature": {
+            "threshold": 0.6,
+            "actual": 0,
+            "triggered": false
+          },
+          "entropy": {
+            "threshold": 1,
+            "actual": 0,
+            "triggered": false
+          },
+          "drift": {
+            "threshold": 0.5,
+            "actual": 0.3239751815057642,
+            "triggered": false
+          },
+          "topologicalDrift": {
+            "threshold": 0.3,
+            "actual": 0.2787142409698969,
+            "triggered": false
+          },
+          "loopDivergent": {
+            "triggered": true,
+            "radius": 0.9999999999799558
+          }
+        }
+      },
+      "tokenCount": 68,
+      "detectingSignals": [
+        "loop-divergent"
+      ]
+    },
+    {
+      "questionId": "first-president-usa",
+      "question": "Who was the first President of the United States?",
+      "category": "history",
+      "baselineResponse": "The first President of the United States was **George Washington**.\n",
+      "anomalyDetection": {
+        "triggered": false,
+        "signals": {
+          "curvature": {
+            "threshold": 0.6,
+            "actual": 0,
+            "triggered": false
+          },
+          "entropy": {
+            "threshold": 1,
+            "actual": 0,
+            "triggered": false
+          },
+          "drift": {
+            "threshold": 0.5,
+            "actual": 0.15592371829335536,
+            "triggered": false
+          },
+          "topologicalDrift": {
+            "threshold": 0.3,
+            "actual": 0.12088559763295215,
+            "triggered": false
+          },
+          "loopDivergent": {
+            "triggered": true,
+            "radius": 0.9999999999799558
+          }
+        }
+      },
+      "tokenCount": 17,
+      "detectingSignals": [
+        "loop-divergent"
+      ]
+    },
+    {
+      "questionId": "density-gold",
+      "question": "What is the atomic number of gold?",
+      "category": "chemistry",
+      "baselineResponse": "The atomic number of gold is 79.\n",
+      "anomalyDetection": {
+        "triggered": false,
+        "signals": {
+          "curvature": {
+            "threshold": 0.6,
+            "actual": 0,
+            "triggered": false
+          },
+          "entropy": {
+            "threshold": 1,
+            "actual": 0,
+            "triggered": false
+          },
+          "drift": {
+            "threshold": 0.5,
+            "actual": 0.10580665135851093,
+            "triggered": false
+          },
+          "topologicalDrift": {
+            "threshold": 0.3,
+            "actual": 0.05121553381510938,
+            "triggered": false
+          },
+          "loopDivergent": {
+            "triggered": true,
+            "radius": 0.9999999999799558
+          }
+        }
+      },
+      "tokenCount": 9,
+      "detectingSignals": [
+        "loop-divergent"
+      ]
+    },
+    {
+      "questionId": "great-wall-length",
+      "question": "Approximately how many kilometers long is the Great Wall of China?",
+      "category": "geography",
+      "baselineResponse": "The Great Wall of China is approximately **21,196 kilometers (13,171 miles)** long.\n",
+      "anomalyDetection": {
+        "triggered": false,
+        "signals": {
+          "curvature": {
+            "threshold": 0.6,
+            "actual": 0,
+            "triggered": false
+          },
+          "entropy": {
+            "threshold": 1,
+            "actual": 0,
+            "triggered": false
+          },
+          "drift": {
+            "threshold": 0.5,
+            "actual": 0.16369313469969352,
+            "triggered": false
+          },
+          "topologicalDrift": {
+            "threshold": 0.3,
+            "actual": 0.1717605603490481,
+            "triggered": false
+          },
+          "loopDivergent": {
+            "triggered": true,
+            "radius": 0.9999999999799558
+          }
+        }
+      },
+      "tokenCount": 21,
+      "detectingSignals": [
+        "loop-divergent"
+      ]
+    },
+    {
+      "questionId": "inventor-telephone",
+      "question": "Who is credited with inventing the practical telephone?",
+      "category": "history",
+      "baselineResponse": "Alexander Graham Bell is generally credited with inventing the first practical telephone. He received the first U.S. patent for the device in 1876.\n",
+      "anomalyDetection": {
+        "triggered": false,
+        "signals": {
+          "curvature": {
+            "threshold": 0.6,
+            "actual": 0,
+            "triggered": false
+          },
+          "entropy": {
+            "threshold": 1,
+            "actual": 0,
+            "triggered": false
+          },
+          "drift": {
+            "threshold": 0.5,
+            "actual": 0.26568354019114043,
+            "triggered": false
+          },
+          "topologicalDrift": {
+            "threshold": 0.3,
+            "actual": 0.15512801347912977,
+            "triggered": false
+          },
+          "loopDivergent": {
+            "triggered": true,
+            "radius": 0.9999999999799558
+          }
+        }
+      },
+      "tokenCount": 37,
+      "detectingSignals": [
+        "loop-divergent"
+      ]
+    },
+    {
+      "questionId": "deepest-ocean-trench",
+      "question": "What is the name of the deepest ocean trench?",
+      "category": "geography",
+      "baselineResponse": "The deepest ocean trench is the **Mariana Trench**.\n",
+      "anomalyDetection": {
+        "triggered": false,
+        "signals": {
+          "curvature": {
+            "threshold": 0.6,
+            "actual": 0,
+            "triggered": false
+          },
+          "entropy": {
+            "threshold": 1,
+            "actual": 0,
+            "triggered": false
+          },
+          "drift": {
+            "threshold": 0.5,
+            "actual": 0.18205887010172975,
+            "triggered": false
+          },
+          "topologicalDrift": {
+            "threshold": 0.3,
+            "actual": 0.09494341831208471,
+            "triggered": false
+          },
+          "loopDivergent": {
+            "triggered": true,
+            "radius": 0.9999999999799558
+          }
+        }
+      },
+      "tokenCount": 13,
+      "detectingSignals": [
+        "loop-divergent"
+      ]
+    }
+  ],
+  "summary": {
+    "questionsAnalyzed": 8,
+    "anomaliesDetected": 0,
+    "detectionRate": 0,
+    "signalHitRate": {
+      "curvature": 0,
+      "entropy": 0,
+      "drift": 0,
+      "topologicalDrift": 0,
+      "loopRisk": 100
+    },
+    "advancedSignalsAddedCoverage": 100
+  }
+}

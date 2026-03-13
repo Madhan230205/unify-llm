@@ -1,0 +1,37 @@
+[
+  {
+    "id": "tq-001",
+    "question": "What is the capital of Australia?",
+    "acceptedAssertions": ["canberra"],
+    "baselineAnswer": "The capital of Australia is Sydney.",
+    "interceptedAnswer": "The capital of Australia is Canberra."
+  },
+  {
+    "id": "tq-002",
+    "question": "Which planet is known as the Red Planet?",
+    "acceptedAssertions": ["mars"],
+    "baselineAnswer": "Jupiter is known as the Red Planet.",
+    "interceptedAnswer": "Mars is known as the Red Planet."
+  },
+  {
+    "id": "tq-003",
+    "question": "Who wrote Pride and Prejudice?",
+    "acceptedAssertions": ["jane austen"],
+    "baselineAnswer": "Pride and Prejudice was written by Charlotte Brontë.",
+    "interceptedAnswer": "Pride and Prejudice was written by Jane Austen."
+  },
+  {
+    "id": "tq-004",
+    "question": "What is the largest ocean on Earth?",
+    "acceptedAssertions": ["pacific"],
+    "baselineAnswer": "The Atlantic Ocean is the largest ocean on Earth.",
+    "interceptedAnswer": "The Pacific Ocean is the largest ocean on Earth."
+  },
+  {
+    "id": "tq-005",
+    "question": "What gas do plants absorb from the atmosphere during photosynthesis?",
+    "acceptedAssertions": ["carbon dioxide", "co2"],
+    "baselineAnswer": "Plants absorb oxygen during photosynthesis.",
+    "interceptedAnswer": "Plants absorb carbon dioxide (CO2) during photosynthesis."
+  }
+]

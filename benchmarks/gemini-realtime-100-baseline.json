@@ -1,0 +1,21 @@
+{
+  "metadata": {
+    "generatedAt": "2026-03-13T09:25:35.100Z",
+    "model": "gemini-2.0-flash",
+    "samples": 100,
+    "parallel": 20,
+    "durationMs": 26719.87,
+    "avgLatencyMs": 2618.09
+  },
+  "summary": {
+    "successCount": 100,
+    "failureCount": 0,
+    "anomalyCount": 97,
+    "signalCompleteness": "100/100",
+    "reasonHistogram": {
+      "none": 3,
+      "entropy-spike": 97
+    }
+  },
+  "failures": []
+}

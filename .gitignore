@@ -5,4 +5,5 @@ dist/
 coverage/
 *.log
 code-review*.md
-src.zip
+src*.zip
+benchmark_results.txt

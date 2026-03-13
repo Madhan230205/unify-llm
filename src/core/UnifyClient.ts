@@ -1,9 +1,12 @@
 import { CompletionRequest, CompletionResponse, UnifyMiddleware, Message, TokenUsage } from '../types';
 import { BaseProvider } from '../providers/base';
+import { AdaptiveModelRouter } from '../routers/adaptiveModelRouter';
+import { ManifoldExtractor } from '../analytics/contextAnalyzer';
 
 export class UnifyClient {
     private providers: Map<string, BaseProvider> = new Map();
     private middlewares: UnifyMiddleware[] = [];
+    private static readonly DEFAULT_AUTO_EXECUTE_MAX_DEPTH = 8;
 
     constructor() { }
 
@@ -18,6 +21,10 @@ export class UnifyClient {
     }
 
     async generate(providerName: string, request: CompletionRequest): Promise<CompletionResponse> {
+        return this.generateInternal(providerName, request, 0);
+    }
+
+    private async generateInternal(providerName: string, request: CompletionRequest, autoExecuteDepth: number): Promise<CompletionResponse> {
         const provider = this.providers.get(providerName);
         if (!provider) {
             throw new Error(`Provider '${providerName}' not registered.`);
@@ -69,6 +76,11 @@ export class UnifyClient {
         }
 
         if (request.autoExecute && response.toolCalls && response.toolCalls.length > 0 && request.tools) {
+            const maxDepth = Math.max(1, request.autoExecuteMaxDepth ?? UnifyClient.DEFAULT_AUTO_EXECUTE_MAX_DEPTH);
+            if (autoExecuteDepth >= maxDepth) {
+                throw new Error(`Auto tool execution exceeded max depth (${maxDepth}).`);
+            }
+
             const executedResults = await Promise.all(response.toolCalls.map(async (tc) => {
                 const tool = request.tools!.find(t => t.name === tc.name);
                 if (!tool || !tool.execute) {
@@ -89,10 +101,11 @@ export class UnifyClient {
                     ...(currentRequest as CompletionRequest).messages,
                     { role: 'assistant', content: response.content || '', toolCalls: response.toolCalls as NonNullable<Message['toolCalls']> },
                     { role: 'tool', content: '', toolResults: executedResults as NonNullable<Message['toolResults']> }
-                ]
+                ],
+                autoExecuteMaxDepth: maxDepth,
             };
 
-            const finalResponse = await this.generate(providerName, nextRequest);
+            const finalResponse = await this.generateInternal(providerName, nextRequest, autoExecuteDepth + 1);
 
             if (response.usage && finalResponse.usage) {
                 finalResponse.usage = {
@@ -185,7 +198,6 @@ export class UnifyClient {
                         if (tc.arguments) existing.arguments = (existing.arguments || '') + (typeof tc.arguments === 'string' ? tc.arguments : '');
                     }
                 }
-                chunk.toolCalls = JSON.parse(JSON.stringify(aggregatedToolCalls));
             }
             yield chunk;
         }
@@ -234,5 +246,32 @@ export class UnifyClient {
             usage: finalResponse.usage,
             providerSpecific: finalResponse.providerSpecific
         };
+    }
+
+    /**
+     * Report feedback for the adaptive model router (RL / bandit loop).
+     * 
+     * @param router The active AdaptiveModelRouter instance.
+     * @param request The request that was routed.
+     * @param model The model that was chosen and executed.
+     * @param utility The calculated utility (0.0 to 1.0) balancing cost, latency, and accuracy.
+     */
+    async reportFeedback(router: AdaptiveModelRouter, request: CompletionRequest, model: string, utility: number): Promise<void> {
+        return await router.store.record(
+            ManifoldExtractor.extract(request.messages.map(m => {
+                if (Array.isArray(m.content)) {
+                    return m.content.map(c => {
+                        if (typeof c === 'string') return c;
+                        if (typeof c === 'object' && c !== null && 'text' in c) {
+                            return String((c as Record<string, unknown>).text || '');
+                        }
+                        return '';
+                    }).join('\n');
+                }
+                return typeof m.content === 'string' ? m.content : String(m.content || '');
+            }).join('\n')),
+            model,
+            utility
+        );
     }
 }

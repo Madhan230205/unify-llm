@@ -30,3 +30,7 @@ jobs:
 
     - name: Run tests with coverage
       run: npm run test:coverage
+
+    - name: Run benchmark thresholds
+      if: matrix.node-version == '22.x'
+      run: npm run benchmark:ci

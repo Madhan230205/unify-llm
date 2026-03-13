@@ -7,6 +7,15 @@ export type TokenCosts = {
     cacheCreation?: number;
 };
 
+export interface CostTrackerOptions {
+    costs?: Record<string, TokenCosts>;
+    fetchCostsUrl?: string;
+    fetcher?: () => Promise<Record<string, TokenCosts>>;
+    refreshIntervalMs?: number;
+    now?: () => number;
+    onRefreshError?: (error: unknown) => void;
+}
+
 export const ModelCosts: Record<string, TokenCosts> = {
     // Costs per 1M tokens (in USD)
     'gpt-4o': { prompt: 5.0, completion: 15.0, cachedPrompt: 2.50 },
@@ -27,18 +36,120 @@ export const ModelCosts: Record<string, TokenCosts> = {
     'gemini-2.0-flash': { prompt: 0.10, completion: 0.40 },
 };
 
+const DEFAULT_COST_REFRESH_INTERVAL_MS = 5 * 60 * 1000;
+
+function isCostTrackerOptions(value: unknown): value is CostTrackerOptions {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) {
+        return false;
+    }
+
+    return 'costs' in value
+        || 'fetchCostsUrl' in value
+        || 'fetcher' in value
+        || 'refreshIntervalMs' in value
+        || 'now' in value
+        || 'onRefreshError' in value;
+}
+
 export class CostTrackerMiddleware implements UnifyMiddleware {
     private totalCostUsd: number = 0;
     private customCosts: Record<string, TokenCosts>;
+    private fetchCostsUrl?: string;
+    private customCostsFetcher?: () => Promise<Record<string, TokenCosts>>;
+    private hasDynamicSource: boolean = false;
+    private hasFetchedDynamicCosts: boolean = false;
+    private lastFetchedAt: number = 0;
+    private lastAttemptedAt: number = 0;
+    private refreshIntervalMs: number = DEFAULT_COST_REFRESH_INTERVAL_MS;
+    private now: () => number = () => Date.now();
+    private onRefreshError?: (error: unknown) => void;
+    private refreshPromise: Promise<void> | null = null;
 
-    constructor(customCosts?: Record<string, TokenCosts>) {
-        this.customCosts = customCosts || {};
+    constructor(customCosts?: Record<string, TokenCosts> | string | (() => Promise<Record<string, TokenCosts>>) | CostTrackerOptions) {
+        this.customCosts = {};
+        if (typeof customCosts === 'string') {
+            this.fetchCostsUrl = customCosts;
+            this.hasDynamicSource = true;
+        } else if (typeof customCosts === 'function') {
+            this.customCostsFetcher = customCosts;
+            this.hasDynamicSource = true;
+        } else if (isCostTrackerOptions(customCosts)) {
+            this.customCosts = customCosts.costs || {};
+            this.fetchCostsUrl = customCosts.fetchCostsUrl;
+            this.customCostsFetcher = customCosts.fetcher;
+            this.hasDynamicSource = Boolean(this.fetchCostsUrl || this.customCostsFetcher);
+            this.refreshIntervalMs = customCosts.refreshIntervalMs ?? DEFAULT_COST_REFRESH_INTERVAL_MS;
+            this.now = customCosts.now ?? this.now;
+            this.onRefreshError = customCosts.onRefreshError;
+        } else {
+            this.customCosts = customCosts || {};
+        }
+
+        if (!this.hasDynamicSource) {
+            this.hasFetchedDynamicCosts = true;
+            this.lastFetchedAt = this.now();
+            this.lastAttemptedAt = this.lastFetchedAt;
+        }
+    }
+
+    private async resolveCosts(): Promise<void> {
+        if (!this.hasDynamicSource) return;
+
+        const now = this.now();
+        const referenceTime = this.hasFetchedDynamicCosts ? this.lastFetchedAt : this.lastAttemptedAt;
+        const hasReference = this.hasFetchedDynamicCosts || this.lastAttemptedAt > 0;
+        const isFresh = hasReference && (now - referenceTime) < this.refreshIntervalMs;
+        if (isFresh) {
+            return;
+        }
+
+        if (this.refreshPromise) {
+            await this.refreshPromise;
+            return;
+        }
+
+        this.refreshPromise = (async () => {
+            this.lastAttemptedAt = this.now();
+
+            try {
+                let incomingCosts: Record<string, TokenCosts> | undefined;
+                if (this.fetchCostsUrl) {
+                    const res = await fetch(this.fetchCostsUrl);
+                    if (res.ok) {
+                        incomingCosts = await res.json() as Record<string, TokenCosts>;
+                    }
+                } else if (this.customCostsFetcher) {
+                    incomingCosts = await this.customCostsFetcher();
+                }
+
+                if (incomingCosts && Object.keys(incomingCosts).length > 0) {
+                    this.customCosts = {
+                        ...this.customCosts,
+                        ...incomingCosts,
+                    };
+                    this.hasFetchedDynamicCosts = true;
+                    this.lastFetchedAt = this.now();
+                }
+            } catch (e) {
+                if (this.onRefreshError) {
+                    this.onRefreshError(e);
+                } else {
+                    console.warn("CostTrackerMiddleware failed to refresh dynamic prices.", e);
+                }
+            } finally {
+                this.refreshPromise = null;
+            }
+        })();
+
+        await this.refreshPromise;
     }
 
     async afterResponse(request: CompletionRequest, response: CompletionResponse): Promise<CompletionResponse> {
         if (!response.usage || response.providerSpecific?._cached) {
             return response;
         }
+
+        await this.resolveCosts();
 
         const model = request.model || response.model;
         const costs = this.customCosts[model] || ModelCosts[model];

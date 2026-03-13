@@ -327,6 +327,92 @@ describe('UnifyClient & Middlewares', () => {
         expect(costTracker.getTotalCost()).toBeCloseTo(0.02325, 6);
     });
 
+    it('should refresh dynamic token costs after the configured TTL', async () => {
+        const client = new UnifyClient();
+        const mockProvider = new MockProvider();
+        let now = 0;
+        const fetcher = vi.fn()
+            .mockResolvedValueOnce({
+                'dynamic-model': { prompt: 10, completion: 20 },
+            })
+            .mockResolvedValueOnce({
+                'dynamic-model': { prompt: 30, completion: 40 },
+            });
+
+        const tracker = new CostTrackerMiddleware({
+            fetcher,
+            refreshIntervalMs: 100,
+            now: () => now,
+        });
+
+        mockProvider.generateCompletion = async (req) => ({
+            content: 'priced dynamically',
+            model: req.model,
+            usage: {
+                promptTokens: 10,
+                completionTokens: 20,
+                totalTokens: 30,
+            },
+        });
+
+        client.registerProvider(mockProvider);
+        client.use(tracker);
+
+        await client.generate('mock', { model: 'dynamic-model', messages: [] });
+        expect(fetcher).toHaveBeenCalledTimes(1);
+        expect(tracker.getTotalCost()).toBeCloseTo(0.0005, 6);
+
+        now = 50;
+        await client.generate('mock', { model: 'dynamic-model', messages: [] });
+        expect(fetcher).toHaveBeenCalledTimes(1);
+        expect(tracker.getTotalCost()).toBeCloseTo(0.001, 6);
+
+        now = 150;
+        await client.generate('mock', { model: 'dynamic-model', messages: [] });
+        expect(fetcher).toHaveBeenCalledTimes(2);
+        expect(tracker.getTotalCost()).toBeCloseTo(0.0021, 6);
+    });
+
+    it('should fall back to stale prices if a refresh fails', async () => {
+        const client = new UnifyClient();
+        const mockProvider = new MockProvider();
+        let now = 0;
+        const onRefreshError = vi.fn();
+        const fetcher = vi.fn()
+            .mockResolvedValueOnce({
+                'dynamic-model': { prompt: 10, completion: 20 },
+            })
+            .mockRejectedValueOnce(new Error('pricing endpoint offline'));
+
+        const tracker = new CostTrackerMiddleware({
+            fetcher,
+            refreshIntervalMs: 100,
+            now: () => now,
+            onRefreshError,
+        });
+
+        mockProvider.generateCompletion = async (req) => ({
+            content: 'priced dynamically',
+            model: req.model,
+            usage: {
+                promptTokens: 10,
+                completionTokens: 20,
+                totalTokens: 30,
+            },
+        });
+
+        client.registerProvider(mockProvider);
+        client.use(tracker);
+
+        await client.generate('mock', { model: 'dynamic-model', messages: [] });
+        now = 150;
+        await client.generate('mock', { model: 'dynamic-model', messages: [] });
+
+        expect(fetcher).toHaveBeenCalledTimes(2);
+        expect(onRefreshError).toHaveBeenCalledTimes(1);
+        expect(tracker.getTotalCost()).toBeCloseTo(0.001, 6);
+    });
+
     it('should automatically execute tools recursively if autoExecute is true', async () => {
         const client = new UnifyClient();
         const mockProvider = new MockProvider();
@@ -445,5 +531,38 @@ describe('UnifyClient & Middlewares', () => {
         // Sum of aggregations: 15 + 25 + 35 + 50 = 125 total tokens
         expect(res.usage?.totalTokens).toBe(125);
         expect(res.content).toBe('Room 101 booked in Paris.');
+    });
+
+    it('should stop auto tool recursion when max depth is exceeded', async () => {
+        const client = new UnifyClient();
+        const mockProvider = new MockProvider();
+
+        mockProvider.generateCompletion = async (req) => ({
+            content: '',
+            model: req.model,
+            toolCalls: [{ id: `call_${Date.now()}`, name: 'brokenTool', arguments: { attempt: true } }],
+            usage: { promptTokens: 5, completionTokens: 5, totalTokens: 10 },
+        });
+
+        client.registerProvider(mockProvider);
+
+        const tools = [
+            {
+                name: 'brokenTool',
+                description: 'Always fails',
+                schema: { type: 'object' },
+                execute: async () => {
+                    throw new Error('still broken');
+                },
+            },
+        ];
+
+        await expect(client.generate('mock', {
+            model: 'gpt-4o',
+            messages: [{ role: 'user', content: 'keep trying forever' }],
+            tools,
+            autoExecute: true,
+            autoExecuteMaxDepth: 2,
+        })).rejects.toThrow('Auto tool execution exceeded max depth (2).');
     });
 });

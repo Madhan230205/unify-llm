@@ -92,8 +92,10 @@ describe('RetryMiddleware & AHD Jitter', () => {
     it('should implement Aetherion Harmonic Dispersion mathematically properly', () => {
         const middleware = new RetryMiddleware({ baseDelayMs: 1000, maxRetries: 1 });
 
-        // Calculate max limit for attempt 0 -> 1000 * 2^0 = 1000
-        const maxLimit = 1000;
+        // With a base delay of 1000:
+        // floor is 500 (base/2), ceiling is 1500 (base/2 + maxDelay * 1.0)
+        const minLimit = 500;
+        const maxLimit = 1500;
 
         // Let's sample 100 AHD operations
         const samples = [];
@@ -103,7 +105,7 @@ describe('RetryMiddleware & AHD Jitter', () => {
             const { delay, nextState } = (middleware as any).calculateAHDJitterDelay(0, currentState);
             samples.push(delay);
             currentState = nextState;
-            expect(delay).toBeGreaterThanOrEqual(0);
+            expect(delay).toBeGreaterThanOrEqual(minLimit);
             expect(delay).toBeLessThanOrEqual(maxLimit);
         }
 
@@ -112,6 +114,21 @@ describe('RetryMiddleware & AHD Jitter', () => {
         // We just assert that it produces variable values, unlike constant math.
         const uniqueValues = new Set(samples);
         expect(uniqueValues.size).toBeGreaterThan(1); // proves non-constant jitter dispersion
+    });
+
+    it('should seed jitter deterministically for the same request', () => {
+        const middleware = new RetryMiddleware({ baseDelayMs: 1000, maxRetries: 1 });
+        const request = {
+            model: 'mock',
+            messages: [{ role: 'user' as const, content: 'same request every time' }],
+        };
+
+        const firstState = (middleware as any).getInitialAhdState(request);
+        const secondState = (middleware as any).getInitialAhdState(request);
+
+        expect(firstState).toBe(secondState);
+        expect(firstState).toBeGreaterThan(0);
+        expect(firstState).toBeLessThan(1);
     });
 
 });

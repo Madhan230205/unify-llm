@@ -1,0 +1,822 @@
+{
+  "metadata": {
+    "generatedAt": "2026-03-13T00:14:13.856Z",
+    "totalTests": 100
+  },
+  "results": [
+    {
+      "questionId": "geo-001",
+      "question": "What is the capital of France?",
+      "domain": "geography",
+      "correctScore": 0.2842226904365688,
+      "hallucinatedScore": 0.2855762172107107,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "geo-002",
+      "question": "What is the capital of Germany?",
+      "domain": "geography",
+      "correctScore": 0.2864592358372369,
+      "hallucinatedScore": 0.2946064877515705,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "geo-003",
+      "question": "What is the capital of Japan?",
+      "domain": "geography",
+      "correctScore": 0.29786567801640507,
+      "hallucinatedScore": 0.29781677169553866,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "geo-004",
+      "question": "What is the capital of Brazil?",
+      "domain": "geography",
+      "correctScore": 0.28221044966829434,
+      "hallucinatedScore": 0.3026207360558302,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "geo-005",
+      "question": "What is the capital of Australia?",
+      "domain": "geography",
+      "correctScore": 0.29995017685531006,
+      "hallucinatedScore": 0.31385813247428007,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "geo-006",
+      "question": "What is the largest ocean?",
+      "domain": "geography",
+      "correctScore": 0.31160072981455483,
+      "hallucinatedScore": 0.30863106156439335,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "geo-007",
+      "question": "What is the longest river?",
+      "domain": "geography",
+      "correctScore": 0.3049250123520454,
+      "hallucinatedScore": 0.3151437586546494,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "geo-008",
+      "question": "Which continent is the largest?",
+      "domain": "geography",
+      "correctScore": 0.27759214014290123,
+      "hallucinatedScore": 0.2880571414730264,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "geo-009",
+      "question": "What is the highest mountain?",
+      "domain": "geography",
+      "correctScore": 0.3032873799310508,
+      "hallucinatedScore": 0.2802620621621985,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "geo-010",
+      "question": "Where is the Sahara Desert?",
+      "domain": "geography",
+      "correctScore": 0.3174692799921749,
+      "hallucinatedScore": 0.29715544111293585,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "geo-011",
+      "question": "What is the capital of Italy?",
+      "domain": "geography",
+      "correctScore": 0.2986478487010627,
+      "hallucinatedScore": 0.2920186217186432,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "geo-012",
+      "question": "What is the deepest ocean trench?",
+      "domain": "geography",
+      "correctScore": 0.3005393079697819,
+      "hallucinatedScore": 0.32063657008273866,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "geo-013",
+      "question": "What is the Great Barrier Reef?",
+      "domain": "geography",
+      "correctScore": 0.32941299432114635,
+      "hallucinatedScore": 0.3311128824270372,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "geo-014",
+      "question": "Which country is the largest by area?",
+      "domain": "geography",
+      "correctScore": 0.2782975589344826,
+      "hallucinatedScore": 0.2772972715694894,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "geo-015",
+      "question": "What is the capital of India?",
+      "domain": "geography",
+      "correctScore": 0.3022349665577988,
+      "hallucinatedScore": 0.3051564579329473,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "hist-001",
+      "question": "Who was the first President of the USA?",
+      "domain": "history",
+      "correctScore": 0.28972104996873155,
+      "hallucinatedScore": 0.28598277536175515,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "hist-002",
+      "question": "In what year did the Titanic sink?",
+      "domain": "history",
+      "correctScore": 0.3049408603874252,
+      "hallucinatedScore": 0.29669779546500924,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "hist-003",
+      "question": "Who wrote Romeo and Juliet?",
+      "domain": "history",
+      "correctScore": 0.3045455631725252,
+      "hallucinatedScore": 0.2998389938565246,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "hist-004",
+      "question": "When did the American Revolution start?",
+      "domain": "history",
+      "correctScore": 0.4541862324186093,
+      "hallucinatedScore": 0.4596546151906815,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "hist-005",
+      "question": "Who invented the printing press?",
+      "domain": "history",
+      "correctScore": 0.29688749009035476,
+      "hallucinatedScore": 0.31410352942219777,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "hist-006",
+      "question": "When did World War II end?",
+      "domain": "history",
+      "correctScore": 0.32591354450079213,
+      "hallucinatedScore": 0.3180221069235427,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "hist-007",
+      "question": "Who was the first Pope?",
+      "domain": "history",
+      "correctScore": 0.3150963902570284,
+      "hallucinatedScore": 0.29881656659996114,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "hist-008",
+      "question": "When did the French Revolution begin?",
+      "domain": "history",
+      "correctScore": 0.4662295931525408,
+      "hallucinatedScore": 0.31026985863437107,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "hist-009",
+      "question": "Who discovered America?",
+      "domain": "history",
+      "correctScore": 0.5111254451087273,
+      "hallucinatedScore": 0.32778685456348433,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "hist-010",
+      "question": "When did the Berlin Wall fall?",
+      "domain": "history",
+      "correctScore": 0.3000875431821628,
+      "hallucinatedScore": 0.3072397176575781,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "hist-011",
+      "question": "Who was Napoleon?",
+      "domain": "history",
+      "correctScore": 0.3362204325614492,
+      "hallucinatedScore": 0.33530344149044866,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "hist-012",
+      "question": "When did the Roman Empire fall?",
+      "domain": "history",
+      "correctScore": 0.303776065969061,
+      "hallucinatedScore": 0.3035248529755514,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "hist-013",
+      "question": "Who invented the lightbulb?",
+      "domain": "history",
+      "correctScore": 0.5008381461201533,
+      "hallucinatedScore": 0.3071049422528894,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "hist-014",
+      "question": "When did the Industrial Revolution start?",
+      "domain": "history",
+      "correctScore": 0.3044319116342561,
+      "hallucinatedScore": 0.30663881390644343,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "hist-015",
+      "question": "Who was Julius Caesar?",
+      "domain": "history",
+      "correctScore": 0.31079597765080386,
+      "hallucinatedScore": 0.322204384545379,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "hist-016",
+      "question": "When did the Moon landing happen?",
+      "domain": "history",
+      "correctScore": 0.3370068511543382,
+      "hallucinatedScore": 0.3428792536010159,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "hist-017",
+      "question": "Who said \"I have a dream\"?",
+      "domain": "history",
+      "correctScore": 0.32861017643494816,
+      "hallucinatedScore": 0.3002652318704845,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "hist-018",
+      "question": "When did the Soviet Union collapse?",
+      "domain": "history",
+      "correctScore": 0.3006041868309614,
+      "hallucinatedScore": 0.30677171261130026,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "hist-019",
+      "question": "Who was the first Emperor of Rome?",
+      "domain": "history",
+      "correctScore": 0.2882203127541557,
+      "hallucinatedScore": 0.2974294222031426,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "hist-020",
+      "question": "When did the Declaration of Independence?",
+      "domain": "history",
+      "correctScore": 0.3200996248870137,
+      "hallucinatedScore": 0.32002482373746133,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "sci-001",
+      "question": "What is the speed of light?",
+      "domain": "science",
+      "correctScore": 0.5281842117846892,
+      "hallucinatedScore": 0.35079368590479376,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "sci-002",
+      "question": "What is the atomic number of gold?",
+      "domain": "science",
+      "correctScore": 0.278674881157554,
+      "hallucinatedScore": 0.27853050476533425,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "sci-003",
+      "question": "What is the chemical formula for water?",
+      "domain": "science",
+      "correctScore": 0.2897134233905923,
+      "hallucinatedScore": 0.28951140680530485,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "sci-004",
+      "question": "How many bones are in the human body?",
+      "domain": "science",
+      "correctScore": 0.3034585527206641,
+      "hallucinatedScore": 0.3034950153583784,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "sci-005",
+      "question": "What is the boiling point of water?",
+      "domain": "science",
+      "correctScore": 0.3103996663323374,
+      "hallucinatedScore": 0.305561150114071,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "sci-006",
+      "question": "What is the largest planet?",
+      "domain": "science",
+      "correctScore": 0.31713893828347406,
+      "hallucinatedScore": 0.3149129235864252,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "sci-007",
+      "question": "How many planets are in our solar system?",
+      "domain": "science",
+      "correctScore": 0.2759669126089603,
+      "hallucinatedScore": 0.27589352213534213,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "sci-008",
+      "question": "What is the symbol for sodium?",
+      "domain": "science",
+      "correctScore": 0.26940920156480036,
+      "hallucinatedScore": 0.28169452325069455,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "sci-009",
+      "question": "What is DNA?",
+      "domain": "science",
+      "correctScore": 0.3857320594908542,
+      "hallucinatedScore": 0.34722031251229146,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "sci-010",
+      "question": "What is the melting point of ice?",
+      "domain": "science",
+      "correctScore": 0.2982473297487507,
+      "hallucinatedScore": 0.2985776636316131,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "sci-011",
+      "question": "How many electrons does carbon have?",
+      "domain": "science",
+      "correctScore": 0.3090549162837115,
+      "hallucinatedScore": 0.3091900418578748,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "sci-012",
+      "question": "What is photosynthesis?",
+      "domain": "science",
+      "correctScore": 0.3616072246088654,
+      "hallucinatedScore": 0.3549682141422308,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "sci-013",
+      "question": "What is gravity?",
+      "domain": "science",
+      "correctScore": 0.3315040639216691,
+      "hallucinatedScore": 0.36052230845048744,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "sci-014",
+      "question": "What is the charge of an electron?",
+      "domain": "science",
+      "correctScore": 0.29065868514677184,
+      "hallucinatedScore": 0.30670645279744857,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "sci-015",
+      "question": "What is the atomic weight of hydrogen?",
+      "domain": "science",
+      "correctScore": 0.4558970152142654,
+      "hallucinatedScore": 0.4560678215148509,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "sci-016",
+      "question": "What is the formula for kinetic energy?",
+      "domain": "science",
+      "correctScore": 0.45313418463654886,
+      "hallucinatedScore": 0.27468969607092636,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "sci-017",
+      "question": "What is quantum mechanics?",
+      "domain": "science",
+      "correctScore": 0.3366251462938445,
+      "hallucinatedScore": 0.4958417005266104,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "sci-018",
+      "question": "What is the wavelength of visible light?",
+      "domain": "science",
+      "correctScore": 0.49468056719201975,
+      "hallucinatedScore": 0.4848380510778184,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "sci-019",
+      "question": "What is the atomic number of oxygen?",
+      "domain": "science",
+      "correctScore": 0.26956453276213876,
+      "hallucinatedScore": 0.2696521992826276,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "sci-020",
+      "question": "What is the first element on the periodic table?",
+      "domain": "science",
+      "correctScore": 0.2837779205293002,
+      "hallucinatedScore": 0.2735303603282591,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "sci-021",
+      "question": "How many chromosomes do humans have?",
+      "domain": "science",
+      "correctScore": 0.27817698009691355,
+      "hallucinatedScore": 0.27812268844897897,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "sci-022",
+      "question": "What is the speed of sound?",
+      "domain": "science",
+      "correctScore": 0.33752076523278907,
+      "hallucinatedScore": 0.34265195320798886,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "sci-023",
+      "question": "What is radioactivity?",
+      "domain": "science",
+      "correctScore": 0.35341619955266856,
+      "hallucinatedScore": 0.3339506766076198,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "sci-024",
+      "question": "What is the pH of pure water?",
+      "domain": "science",
+      "correctScore": 0.27431737844056214,
+      "hallucinatedScore": 0.2746900424579742,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "sci-025",
+      "question": "What is cellular respiration?",
+      "domain": "science",
+      "correctScore": 0.3261058544687065,
+      "hallucinatedScore": 0.3150192520402908,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "tech-001",
+      "question": "Who created Python?",
+      "domain": "technology",
+      "correctScore": 0.33585570467105685,
+      "hallucinatedScore": 0.29964418864904807,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "tech-002",
+      "question": "What year was the internet invented?",
+      "domain": "technology",
+      "correctScore": 0.3432569682895059,
+      "hallucinatedScore": 0.31599005874297653,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "tech-003",
+      "question": "Who invented the transistor?",
+      "domain": "technology",
+      "correctScore": 0.3439031164691877,
+      "hallucinatedScore": 0.3203946691209332,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "tech-004",
+      "question": "What does HTML stand for?",
+      "domain": "technology",
+      "correctScore": 0.48021994946017044,
+      "hallucinatedScore": 0.49300379822400975,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "tech-005",
+      "question": "Who created JavaScript?",
+      "domain": "technology",
+      "correctScore": 0.2862555518820735,
+      "hallucinatedScore": 0.30961936191238937,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "tech-006",
+      "question": "What is open source?",
+      "domain": "technology",
+      "correctScore": 0.3251586603278107,
+      "hallucinatedScore": 0.3149049193708975,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "tech-007",
+      "question": "What does CPU stand for?",
+      "domain": "technology",
+      "correctScore": 0.31418028838361994,
+      "hallucinatedScore": 0.3292517209245558,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "tech-008",
+      "question": "What does RAM stand for?",
+      "domain": "technology",
+      "correctScore": 0.30846618319382824,
+      "hallucinatedScore": 0.489943682393655,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "tech-009",
+      "question": "Who founded Microsoft?",
+      "domain": "technology",
+      "correctScore": 0.31815951824545036,
+      "hallucinatedScore": 0.3302756175405137,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "tech-010",
+      "question": "What is cloud computing?",
+      "domain": "technology",
+      "correctScore": 0.31495656652829707,
+      "hallucinatedScore": 0.3118384803684383,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "tech-011",
+      "question": "What does API stand for?",
+      "domain": "technology",
+      "correctScore": 0.3395463484082958,
+      "hallucinatedScore": 0.33459966672906993,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "tech-012",
+      "question": "What is machine learning?",
+      "domain": "technology",
+      "correctScore": 0.3248785046258292,
+      "hallucinatedScore": 0.3320453809161184,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "tech-013",
+      "question": "What does IoT stand for?",
+      "domain": "technology",
+      "correctScore": 0.3063107510909556,
+      "hallucinatedScore": 0.3254260765040211,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "tech-014",
+      "question": "Who invented the World Wide Web?",
+      "domain": "technology",
+      "correctScore": 0.31012768997168416,
+      "hallucinatedScore": 0.2945016593122832,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "tech-015",
+      "question": "What is blockchain?",
+      "domain": "technology",
+      "correctScore": 0.3477276066144305,
+      "hallucinatedScore": 0.3375573737989057,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "lit-001",
+      "question": "Who wrote Pride and Prejudice?",
+      "domain": "literature",
+      "correctScore": 0.28144280334929084,
+      "hallucinatedScore": 0.29708293172162403,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "lit-002",
+      "question": "Who wrote 1984?",
+      "domain": "literature",
+      "correctScore": 0.29686300356751455,
+      "hallucinatedScore": 0.34209681927081304,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "lit-003",
+      "question": "Who wrote The Great Gatsby?",
+      "domain": "literature",
+      "correctScore": 0.3207785009058204,
+      "hallucinatedScore": 0.3134749448360017,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "lit-004",
+      "question": "Who wrote To Kill a Mockingbird?",
+      "domain": "literature",
+      "correctScore": 0.27984265524864843,
+      "hallucinatedScore": 0.2897426032071766,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "lit-005",
+      "question": "Who wrote Jane Eyre?",
+      "domain": "literature",
+      "correctScore": 0.30144971424627404,
+      "hallucinatedScore": 0.3102876068503773,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "lit-006",
+      "question": "Who wrote Moby Dick?",
+      "domain": "literature",
+      "correctScore": 0.31215204549106956,
+      "hallucinatedScore": 0.29114668815302297,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "lit-007",
+      "question": "Who wrote Crime and Punishment?",
+      "domain": "literature",
+      "correctScore": 0.29998274431864824,
+      "hallucinatedScore": 0.2902684914783696,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "lit-008",
+      "question": "Who wrote Wuthering Heights?",
+      "domain": "literature",
+      "correctScore": 0.32191296546253606,
+      "hallucinatedScore": 0.29653387765670597,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "lit-009",
+      "question": "Who wrote The Odyssey?",
+      "domain": "literature",
+      "correctScore": 0.2798543301173472,
+      "hallucinatedScore": 0.3061521198998667,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "lit-010",
+      "question": "Who wrote War and Peace?",
+      "domain": "literature",
+      "correctScore": 0.30662627856514635,
+      "hallucinatedScore": 0.3199168301147378,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "lit-011",
+      "question": "Who wrote Frankenstein?",
+      "domain": "literature",
+      "correctScore": 0.30212710076807714,
+      "hallucinatedScore": 0.30587463982467256,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "lit-012",
+      "question": "Who wrote The Little Prince?",
+      "domain": "literature",
+      "correctScore": 0.4862829290908386,
+      "hallucinatedScore": 0.3130889028333234,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "lit-013",
+      "question": "Who wrote Oliver Twist?",
+      "domain": "literature",
+      "correctScore": 0.3142112576328587,
+      "hallucinatedScore": 0.3153469158365453,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "lit-014",
+      "question": "Who wrote Dracula?",
+      "domain": "literature",
+      "correctScore": 0.29363719990517406,
+      "hallucinatedScore": 0.2945692146811521,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "lit-015",
+      "question": "Who wrote Alice in Wonderland?",
+      "domain": "literature",
+      "correctScore": 0.29071969145389914,
+      "hallucinatedScore": 0.29571043547204867,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "cult-001",
+      "question": "Who painted the Mona Lisa?",
+      "domain": "culture",
+      "correctScore": 0.2837625304640091,
+      "hallucinatedScore": 0.2916175414641857,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "cult-002",
+      "question": "Who composed the 9th Symphony?",
+      "domain": "culture",
+      "correctScore": 0.47976302003574933,
+      "hallucinatedScore": 0.48226326983483175,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "cult-003",
+      "question": "Who sculpted the David?",
+      "domain": "culture",
+      "correctScore": 0.29094108160372933,
+      "hallucinatedScore": 0.2943622584171767,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "cult-004",
+      "question": "Who painted Starry Night?",
+      "domain": "culture",
+      "correctScore": 0.2961475414761318,
+      "hallucinatedScore": 0.3029866515337941,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "cult-005",
+      "question": "What is the Louvre?",
+      "domain": "culture",
+      "correctScore": 0.3041240852124518,
+      "hallucinatedScore": 0.3094075190685953,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "cult-006",
+      "question": "Who created the statue Thinking Man?",
+      "domain": "culture",
+      "correctScore": 0.29866708806112474,
+      "hallucinatedScore": 0.2881299335635289,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "cult-007",
+      "question": "What is Broadway?",
+      "domain": "culture",
+      "correctScore": 0.3256565638448333,
+      "hallucinatedScore": 0.3169656302370815,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "cult-008",
+      "question": "Who designed the Eiffel Tower?",
+      "domain": "culture",
+      "correctScore": 0.2931586773578732,
+      "hallucinatedScore": 0.2941654166704977,
+      "correctlyScored": true
+    },
+    {
+      "questionId": "cult-009",
+      "question": "What is a sonnet?",
+      "domain": "culture",
+      "correctScore": 0.3752190602859973,
+      "hallucinatedScore": 0.3561731607807985,
+      "correctlyScored": false
+    },
+    {
+      "questionId": "cult-010",
+      "question": "Who painted the ceiling of the Sistine Chapel?",
+      "domain": "culture",
+      "correctScore": 0.2722285559498235,
+      "hallucinatedScore": 0.2708700733563023,
+      "correctlyScored": false
+    }
+  ],
+  "summary": {
+    "totalTests": 100,
+    "correctDetectionRate": 51,
+    "signalImprovementPct": 0,
+    "improvementsPerDomain": {
+      "geography": 60,
+      "history": 40,
+      "science": 44,
+      "technology": 46.666666666666664,
+      "literature": 66.66666666666666,
+      "culture": 60
+    },
+    "verdict": "REFUTES_THEORY"
+  }
+}

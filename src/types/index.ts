@@ -28,6 +28,8 @@ export interface CompletionRequest {
     messages: Message[];
     tools?: UnifyTool[];
     autoExecute?: boolean;
+    /** Maximum recursive tool-execution turns when autoExecute=true (default: 8). */
+    autoExecuteMaxDepth?: number;
     temperature?: number;
     maxTokens?: number;
     stream?: boolean;
@@ -35,6 +37,23 @@ export interface CompletionRequest {
     schemaName?: string;
     providerOptions?: Record<string, unknown>;
     signal?: AbortSignal;
+
+    /** Constraints for ParetoNavigatorRouter multi-objective optimization */
+    paretoConstraints?: {
+        maxCostUsd?: number;
+        maxLatencyMs?: number;
+        minQuality?: number;
+    };
+    /** Options for SemanticMomentumGuardian hallucination detection */
+    guardianOptions?: {
+        alpha?: number;
+        tau?: number;
+        chunkSize?: number;
+        qvipEnabled?: boolean;
+        verificationTimeoutMs?: number;
+        qvipThetaLow?: number;
+        qvipThetaHigh?: number;
+    };
 }
 
 export class UnifyAPIError extends Error {

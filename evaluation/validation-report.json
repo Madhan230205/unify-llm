@@ -1,0 +1,409 @@
+{
+  "metadata": {
+    "generatedAt": "2026-03-13T00:11:37.824Z",
+    "totalQuestions": 8,
+    "totalTests": 8
+  },
+  "results": [
+    {
+      "questionId": "capital-france",
+      "question": "What is the capital of France?",
+      "correctAnswer": {
+        "response": "The capital of France is Paris.",
+        "score": 0.2842226904365688,
+        "signals": [
+          "loop-risk"
+        ],
+        "signal": {
+          "shouldAbort": false,
+          "curvature": 0,
+          "drift": 0.1705930597689491,
+          "entropy": 3.9101792788836396,
+          "entropySpike": false,
+          "modalityShift": 0,
+          "retention": 0.6666666666666666,
+          "instabilityLift": 0.007626734261749202,
+          "topologicalDrift": 0.034534925884905567,
+          "topologicalComponents": 1,
+          "loopSpectralRadius": 1.0000000000198594,
+          "loopDivergent": true
+        }
+      },
+      "hallucinatedAnswer": {
+        "response": "The capital of France is Marseille, the second-largest city.",
+        "score": 0.3237335130717959,
+        "signals": [
+          "loop-risk"
+        ],
+        "signal": {
+          "shouldAbort": false,
+          "curvature": 0,
+          "drift": 0.2615943337716152,
+          "entropy": 4.139957055091793,
+          "entropySpike": false,
+          "modalityShift": 0.07934920476158723,
+          "retention": 0.3333333333333333,
+          "instabilityLift": 0,
+          "topologicalDrift": 0.13797745202421427,
+          "topologicalComponents": 1,
+          "loopSpectralRadius": 1.0000000000198594,
+          "loopDivergent": true
+        }
+      },
+      "correctlyScored": true
+    },
+    {
+      "questionId": "shakespeare-authorship",
+      "question": "Who wrote Romeo and Juliet?",
+      "correctAnswer": {
+        "response": "William Shakespeare wrote Romeo and Juliet in 1594.",
+        "score": 0.3269890452383244,
+        "signals": [
+          "loop-risk"
+        ],
+        "signal": {
+          "shouldAbort": false,
+          "curvature": 0,
+          "drift": 0.2228062191587306,
+          "entropy": 4.325934470146848,
+          "entropySpike": false,
+          "modalityShift": 0,
+          "retention": 0.5,
+          "instabilityLift": 0.01698885208444262,
+          "topologicalDrift": 0.1742724494580593,
+          "topologicalComponents": 1,
+          "loopSpectralRadius": 1.0000000000198594,
+          "loopDivergent": true
+        }
+      },
+      "hallucinatedAnswer": {
+        "response": "Christopher Marlowe wrote Romeo and Juliet as a collaboration with Thomas Kyd.",
+        "score": 0.3257364196919,
+        "signals": [
+          "loop-risk"
+        ],
+        "signal": {
+          "shouldAbort": false,
+          "curvature": 0,
+          "drift": 0.28335355701330045,
+          "entropy": 4.226770761169535,
+          "entropySpike": false,
+          "modalityShift": 0,
+          "retention": 0.375,
+          "instabilityLift": 0.051383999089262944,
+          "topologicalDrift": 0.13293354455961967,
+          "topologicalComponents": 1,
+          "loopSpectralRadius": 1.0000000000198594,
+          "loopDivergent": true
+        }
+      },
+      "correctlyScored": false
+    },
+    {
+      "questionId": "titanic-year",
+      "question": "In what year did the Titanic sink?",
+      "correctAnswer": {
+        "response": "The Titanic sank in 1912 after hitting an iceberg.",
+        "score": 0.3123098461220184,
+        "signals": [
+          "drift",
+          "loop-risk"
+        ],
+        "signal": {
+          "shouldAbort": false,
+          "curvature": 0,
+          "drift": 0.3437179360691174,
+          "entropy": 3.9014678801994482,
+          "entropySpike": false,
+          "modalityShift": 0,
+          "retention": 0.16666666666666666,
+          "instabilityLift": 0,
+          "topologicalDrift": 0.043008622846603194,
+          "topologicalComponents": 1,
+          "loopSpectralRadius": 1.0000000000198594,
+          "loopDivergent": true
+        }
+      },
+      "hallucinatedAnswer": {
+        "response": "The Titanic sank in 1905 during a collision with another ship.",
+        "score": 0.33734858766905584,
+        "signals": [
+          "drift",
+          "loop-risk"
+        ],
+        "signal": {
+          "shouldAbort": false,
+          "curvature": 0,
+          "drift": 0.3494961882239207,
+          "entropy": 4.13171698039186,
+          "entropySpike": false,
+          "modalityShift": 0,
+          "retention": 0.125,
+          "instabilityLift": 0,
+          "topologicalDrift": 0.13969663774187083,
+          "topologicalComponents": 1,
+          "loopSpectralRadius": 1.0000000000198594,
+          "loopDivergent": true
+        }
+      },
+      "correctlyScored": true
+    },
+    {
+      "questionId": "moon-landing",
+      "question": "Who was the first person to walk on the moon?",
+      "correctAnswer": {
+        "response": "Neil Armstrong was the first person to walk on the moon in 1969.",
+        "score": 0.3097975829327973,
+        "signals": [
+          "loop-risk"
+        ],
+        "signal": {
+          "shouldAbort": false,
+          "curvature": 0,
+          "drift": 0.18317126420866778,
+          "entropy": 4.085882914624721,
+          "entropySpike": false,
+          "modalityShift": 0,
+          "retention": 0.5714285714285714,
+          "instabilityLift": 0,
+          "topologicalDrift": 0.12928757320598847,
+          "topologicalComponents": 1,
+          "loopSpectralRadius": 1.0000000000198594,
+          "loopDivergent": true
+        }
+      },
+      "hallucinatedAnswer": {
+        "response": "Buzz Aldrin was the first person to walk on the moon in 1969, followed by Neil Armstrong.",
+        "score": 0.3482736279261184,
+        "signals": [
+          "topological",
+          "loop-risk"
+        ],
+        "signal": {
+          "shouldAbort": false,
+          "curvature": 0,
+          "drift": 0.23468729784715292,
+          "entropy": 4.377944392716538,
+          "entropySpike": false,
+          "modalityShift": 0,
+          "retention": 0.4,
+          "instabilityLift": 0.05630298777295717,
+          "topologicalDrift": 0.2522821329961818,
+          "topologicalComponents": 1,
+          "loopSpectralRadius": 1.0000000000198594,
+          "loopDivergent": true
+        }
+      },
+      "correctlyScored": true
+    },
+    {
+      "questionId": "python-creator",
+      "question": "Who created the Python programming language?",
+      "correctAnswer": {
+        "response": "Guido van Rossum created Python in 1989.",
+        "score": 0.3237594103915339,
+        "signals": [
+          "drift",
+          "loop-risk"
+        ],
+        "signal": {
+          "shouldAbort": false,
+          "curvature": 0,
+          "drift": 0.32905506038541654,
+          "entropy": 4.296439344671016,
+          "entropySpike": false,
+          "modalityShift": 0,
+          "retention": 0.4,
+          "instabilityLift": 0,
+          "topologicalDrift": 0.09760460533488557,
+          "topologicalComponents": 1,
+          "loopSpectralRadius": 1.0000000000198594,
+          "loopDivergent": true
+        }
+      },
+      "hallucinatedAnswer": {
+        "response": "Tim Peters designed Python in 1995 as an alternative to Ruby.",
+        "score": 0.32490625603884576,
+        "signals": [
+          "drift",
+          "loop-risk"
+        ],
+        "signal": {
+          "shouldAbort": false,
+          "curvature": 0,
+          "drift": 0.39361007323070135,
+          "entropy": 4.214291035854072,
+          "entropySpike": false,
+          "modalityShift": 0,
+          "retention": 0.16666666666666666,
+          "instabilityLift": 0,
+          "topologicalDrift": 0.06345898021696222,
+          "topologicalComponents": 1,
+          "loopSpectralRadius": 1.0000000000198594,
+          "loopDivergent": true
+        }
+      },
+      "correctlyScored": true
+    },
+    {
+      "questionId": "great-wall-builder",
+      "question": "Which Chinese dynasty built most of the Great Wall of China?",
+      "correctAnswer": {
+        "response": "The Ming Dynasty built most of the Great Wall of China that exists today.",
+        "score": 0.2870710517363392,
+        "signals": [
+          "loop-risk"
+        ],
+        "signal": {
+          "shouldAbort": false,
+          "curvature": 0,
+          "drift": 0.2007391389606209,
+          "entropy": 4.156817999159026,
+          "entropySpike": false,
+          "modalityShift": 0,
+          "retention": 0.6,
+          "instabilityLift": 0,
+          "topologicalDrift": 0.02784072356898418,
+          "topologicalComponents": 1,
+          "loopSpectralRadius": 1.0000000000198594,
+          "loopDivergent": true
+        }
+      },
+      "hallucinatedAnswer": {
+        "response": "The Qin Dynasty built the entire Great Wall as a single continuous structure.",
+        "score": 0.3036261939904922,
+        "signals": [
+          "loop-risk"
+        ],
+        "signal": {
+          "shouldAbort": false,
+          "curvature": 0,
+          "drift": 0.2929299733247437,
+          "entropy": 4.024976522965924,
+          "entropySpike": false,
+          "modalityShift": 0,
+          "retention": 0.5,
+          "instabilityLift": 0.04021190810699743,
+          "topologicalDrift": 0.03874679196712238,
+          "topologicalComponents": 1,
+          "loopSpectralRadius": 1.0000000000198594,
+          "loopDivergent": true
+        }
+      },
+      "correctlyScored": true
+    },
+    {
+      "questionId": "oxygen-discoverer",
+      "question": "Who discovered oxygen?",
+      "correctAnswer": {
+        "response": "Joseph Priestley is credited with the discovery of oxygen in 1774.",
+        "score": 0.3392314064337674,
+        "signals": [
+          "drift",
+          "loop-risk"
+        ],
+        "signal": {
+          "shouldAbort": false,
+          "curvature": 0,
+          "drift": 0.3453374758326694,
+          "entropy": 4.1997182714515695,
+          "entropySpike": false,
+          "modalityShift": 0,
+          "retention": 0.14285714285714285,
+          "instabilityLift": 0.004213497128604027,
+          "topologicalDrift": 0.14972314023546812,
+          "topologicalComponents": 1,
+          "loopSpectralRadius": 1.0000000000198594,
+          "loopDivergent": true
+        }
+      },
+      "hallucinatedAnswer": {
+        "response": "Antoine Lavoisier discovered oxygen in 1783 and named it the \"air of life\".",
+        "score": 0.3349630672833574,
+        "signals": [
+          "drift",
+          "loop-risk"
+        ],
+        "signal": {
+          "shouldAbort": false,
+          "curvature": 0,
+          "drift": 0.31305774912261963,
+          "entropy": 4.206835483939289,
+          "entropySpike": false,
+          "modalityShift": 0,
+          "retention": 0.2857142857142857,
+          "instabilityLift": 0.06752961811902952,
+          "topologicalDrift": 0.15201761965985786,
+          "topologicalComponents": 1,
+          "loopSpectralRadius": 1.0000000000198594,
+          "loopDivergent": true
+        }
+      },
+      "correctlyScored": false
+    },
+    {
+      "questionId": "solar-system-planets",
+      "question": "How many planets are in our solar system?",
+      "correctAnswer": {
+        "response": "There are 8 planets in our solar system after Pluto was reclassified.",
+        "score": 0.30757927509853245,
+        "signals": [
+          "loop-risk"
+        ],
+        "signal": {
+          "shouldAbort": false,
+          "curvature": 0,
+          "drift": 0.2509699576042348,
+          "entropy": 4.0181685542797005,
+          "entropySpike": false,
+          "modalityShift": 0,
+          "retention": 0.42857142857142855,
+          "instabilityLift": 0.10146482914204025,
+          "topologicalDrift": 0.07973512583158887,
+          "topologicalComponents": 1,
+          "loopSpectralRadius": 1.0000000000198594,
+          "loopDivergent": true
+        }
+      },
+      "hallucinatedAnswer": {
+        "response": "There are 9 planets in our solar system including the recently discovered planet X.",
+        "score": 0.3151897246654768,
+        "signals": [
+          "loop-risk"
+        ],
+        "signal": {
+          "shouldAbort": false,
+          "curvature": 0,
+          "drift": 0.256505023469515,
+          "entropy": 4.082598490632477,
+          "entropySpike": false,
+          "modalityShift": 0,
+          "retention": 0.375,
+          "instabilityLift": 0.0022300225768074333,
+          "topologicalDrift": 0.10685588458019814,
+          "topologicalComponents": 1,
+          "loopSpectralRadius": 1.0000000000198594,
+          "loopDivergent": true
+        }
+      },
+      "correctlyScored": true
+    }
+  ],
+  "summary": {
+    "correctDetectionRate": 75,
+    "signalEffectiveness": {
+      "curvatureCorrectness": 0,
+      "entropyCorrectness": 0,
+      "driftCorrectness": 87.5,
+      "topologicalCorrectness": 75,
+      "loopRiskCorrectness": 0
+    },
+    "advancedSignalsImprovement": {
+      "topoAlone": 75,
+      "loopAlone": 0,
+      "combined": 37.5
+    },
+    "verdict": "INCONCLUSIVE",
+    "explanation": "⚠️  𝐈𝐍𝐂𝐎𝐍𝐂𝐋𝐔𝐒𝐈𝐕𝐄: 75.0% detection rate. Math helps somewhat, but tuning is needed."
+  }
+}
