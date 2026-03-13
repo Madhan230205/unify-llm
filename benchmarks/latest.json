@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-03-12T22:12:11.078Z",
+    "generatedAt": "2026-03-13T14:11:21.708Z",
     "nodeVersion": "v22.17.0",
     "platform": "win32",
     "iterations": 80,
@@ -13,23 +13,23 @@
       "precisionPct": 100,
       "recallPct": 100,
       "falsePositiveRatePct": 0,
-      "averageNormalCurvature": 0.014188,
-      "averageAnomalousCurvature": 0.012576,
+      "averageNormalCurvature": 0.012504,
+      "averageAnomalousCurvature": 0.012327,
       "sampleCount": 80,
       "primeCount": 20
     },
     "guardianAbortLatency": {
-      "averageAbortLatencyMs": 16.65,
-      "p95AbortLatencyMs": 40.45,
-      "abortRatePct": 100,
+      "averageAbortLatencyMs": 7.43,
+      "p95AbortLatencyMs": 19.23,
+      "abortRatePct": 75,
       "sampleCount": 40,
       "chunkDelayMs": 8
     },
     "paretoCostSavings": {
-      "costSavedPct": 34.78,
-      "selectedSuccessRatePct": 97.5,
+      "costSavedPct": 43.69,
+      "selectedSuccessRatePct": 92.5,
       "frontierSuccessRatePct": 98.75,
-      "budgetSelectionRatePct": 52.5,
+      "budgetSelectionRatePct": 63.75,
       "sampleCount": 80,
       "trainingSamples": 240
     },
@@ -37,7 +37,7 @@
       "requestedIterations": 10000,
       "microbatchSize": 40,
       "batchCount": 250,
-      "wallTimeMs": 8.37,
+      "wallTimeMs": 5.49,
       "yieldedToEventLoop": true
     }
   }
