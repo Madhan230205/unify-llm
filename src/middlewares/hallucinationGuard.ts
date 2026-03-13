@@ -89,7 +89,11 @@ export function createHallucinationGuard(
         const geometricAnomaly = kappa > curvatureThreshold && drift > driftThreshold;
         const lowRetentionDrift = retention < 0.05 && drift > (driftStats.mean + 0.01) && modalityShift > 0.15;
         const unstableBurst = geometricAnomaly && instabilityLift > 0.05 && modalityShift > 0.08;
-        return unstableBurst || lowRetentionDrift;
+        // When the response shares essentially no vocabulary with the prompt (retention ≈ 0)
+        // and its drift is above the historical baseline, treat that as an anomaly regardless
+        // of modality shift — off-topic coherent responses won't shift code/prose modality.
+        const vocabularyDesertAnomaly = retention < 0.02 && drift > driftStats.mean;
+        return unstableBurst || lowRetentionDrift || vocabularyDesertAnomaly;
     }
 
     function hologramToCoordinate(holo: Int8Array): number[] {
@@ -221,6 +225,7 @@ export function createHallucinationGuard(
             let maxDrift = 0;
             let maxModalityShift = 0;
             let retentionSum = 0;
+            let maxResponseRisk = 0;
 
             for (const chunk of responseChunks) {
                 const chunkHologram = textToHologram(chunk);
@@ -237,7 +242,7 @@ export function createHallucinationGuard(
                 retentionSum += retention;
                 updateStats(curvatureStats, kappa);
                 updateStats(driftStats, drift);
-                void responseRisk;
+                if (responseRisk > maxResponseRisk) maxResponseRisk = responseRisk;
             }
 
             const averageRetention = responseChunks.length > 0 ? retentionSum / responseChunks.length : 1;
@@ -250,7 +255,7 @@ export function createHallucinationGuard(
                 semanticRetention: averageRetention,
                 semanticConditionNumber: promptEnvelope.localConditionNumber,
                 semanticInstability: promptRisk,
-                curvatureAnomaly: isAnomaly(maxCurvature, maxDrift, maxModalityShift, averageRetention, promptRisk, promptRisk),
+                curvatureAnomaly: isAnomaly(maxCurvature, maxDrift, maxModalityShift, averageRetention, promptRisk, maxResponseRisk),
             };
 
             const merged = annotateResponseWithInterception(response, coreSignal);
